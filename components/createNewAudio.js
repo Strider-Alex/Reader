@@ -6,6 +6,7 @@ const Sound = require('react-native-sound');
 let music; // Sound instance
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
+const audioDir = dirs.DocumentDir+'/audio';
 //console.log(AudioUtils.DocumentDirectoryPath);
 
 export default class CreateNewAudio extends Component {
@@ -39,12 +40,10 @@ export default class CreateNewAudio extends Component {
                 if (!hasPermission) return;
         });
         // make audio directory
-        fs.ls(dirs.DocumentDir+'/audio').then((files)=>{
-            //do nothing
-        }).catch((err)=>{
+        if(!(fs.isDir(audioDir))){
             // if audio path doesn't exist, mkdir
-            fs.mkdir(dirs.DocumentDir+'/audio');
-        })
+            fs.mkdir(audioDir);
+        }
     }
      _checkPermission() {
         if (Platform.OS !== 'android') {

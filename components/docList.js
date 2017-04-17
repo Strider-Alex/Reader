@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { View,ListView,Text,TouchableHighlight  } from 'react-native';
+import { View,ListView,Text,TouchableHighlight, Button  } from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
+const apiUrl = 'http://api.strider.site/doc';
+const docDir = dirs.DocumentDir+'/docs';
 console.log(dirs.DocumentDir);
 console.log(dirs.CacheDir);
 console.log(dirs.DCIMDir);
@@ -15,11 +17,7 @@ export default class DocList extends Component {
         super(props);
         this.state = {
             //docList:[],
-            docList:[
-                "Harry Potter",
-                "Shakespeare",
-                "Dou Po Cang Qiong"
-            ],
+            docList:[],
             // if it's downloading the docs from api
             downloading:false
         };
@@ -27,20 +25,26 @@ export default class DocList extends Component {
     }
 
     componentDidMount() {
-        // get file directory
-        /*fs.ls(dirs.DocumentDir+'/docs').then((files)=>{
-          console.log(files);
-            this.setState({
-                docList:files
-            })
-        }).catch((err)=>{
+        if(fs.isDir(docDir)){
+            // get file directory
+            fs.ls(docDir).then((files)=>{
+                for(let i in files){
+                    files[i]=files[i].split('.')[0];
+                }
+                this.setState({
+                    docList:files
+                })
+            }).catch((err)=>{
+                console.log(err);
+            });
+        }
+        else{
             // if file doesn't exist, mkdir
-            fs.mkdir(dirs.DocumentDir+'/docs');
-        })*/
+            fs.mkdir(docDir);
+        }
     }
     _onDocSelected(doc){
         if(doc){
-            console.log("Doc selected:"+doc);
             // select doc
             this.props.onStateChange({
                 doc:doc
@@ -49,22 +53,55 @@ export default class DocList extends Component {
             this.props.navigator.pop();
         }
     }
+    // download default docs from the API
+    _downloadDoc(){
+        // set start downloading
+        this.setState({
+            downloading:true
+        });
+        RNFetchBlob
+            .fetch('GET', apiUrl+'?default=true')
+            .then((res)=>{
+                let data = res.json().data;
+                // new state object
+                let newState = {
+                    downloading:false,
+                    docList:[]
+                };
+                // write data to seperate JSON files
+                let tasks=[];
+                data.forEach((doc)=>{
+                    newState.docList.push(doc.title);
+                    tasks.push(
+                        fs.writeFile(
+                            docDir+`/${doc.title}.json`,
+                            JSON.stringify(doc),
+                            'utf-8'
+                        )
+                    );
+                });
+                // finish dowload, update states
+                this.setState(newState);
+                // return all tasks
+                return Promise.all(tasks);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    }
     render() {
         return (
             /* jshint ignore: start */
             <View>
-              {(() => {
-                if(this.state.downloading){
-                    return (
-                        <Text>Downloading...</Text>
-                    )
-                }
-              })()}
-              <ListView
-                dataSource={ds.cloneWithRows(this.state.docList)}
-                renderRow={(rowData) => <TouchableHighlight onPress={()=>this._onDocSelected(rowData)}><Text>{rowData}</Text></TouchableHighlight>}
-                enableEmptySections={true}
-              />
+                <Button title={(()=>{
+                    if(this.state.downloading) return "Downloading";
+                    else return "Dowload default docs";})()}
+                onPress={()=>this._downloadDoc()}/>
+                <ListView
+                    dataSource={ds.cloneWithRows(this.state.docList)}
+                    renderRow={(rowData) => <TouchableHighlight onPress={()=>this._onDocSelected(rowData)}><Text>{rowData}</Text></TouchableHighlight>}
+                    enableEmptySections={true}
+                />
             </View>
             /* jshint ignore: end */
         );
