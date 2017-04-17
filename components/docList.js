@@ -40,7 +40,7 @@ export default class DocList extends Component {
     }
     _onDocSelected(doc){
         if(doc){
-            console.log(this.props);
+            console.log("Doc selected:"+doc);
             // select doc
             this.props.onStateChange({
                 doc:doc
@@ -62,7 +62,7 @@ export default class DocList extends Component {
               })()}
               <ListView
                 dataSource={ds.cloneWithRows(this.state.docList)}
-                renderRow={(rowData) => <TouchableHighlight onPress={this._onDocSelected.bind(this,rowData)}><Text>{rowData}</Text></TouchableHighlight>}
+                renderRow={(rowData) => <TouchableHighlight onPress={()=>this._onDocSelected(rowData)}><Text>{rowData}</Text></TouchableHighlight>}
                 enableEmptySections={true}
               />
             </View>

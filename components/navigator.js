@@ -13,7 +13,6 @@ export default class AppNavigator extends Component {
         }
     }
     _onStateChange(newState){
-        console.log("State:"+newState);
         this.setState(newState);
     }
     render() {
@@ -40,7 +39,7 @@ export default class AppNavigator extends Component {
                         return <MyStudio navigator={navigator} routes={routes}/>
                         break;
                     case 3:
-                        return <DocList navigator={navigator} routes={routes} onStateChange={()=>this._onStateChange}/>
+                        return <DocList navigator={navigator} routes={routes} onStateChange={(newState)=>this._onStateChange(newState)}/>
                     default:
                         return <Text>Hello {route.title}!</Text> 
                 }
