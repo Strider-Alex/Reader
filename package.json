@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "native-base": "^2.1.2",
     "react": "16.0.0-alpha.6",
     "react-native": "0.43.3",
     "react-native-audio": "^3.2.2",

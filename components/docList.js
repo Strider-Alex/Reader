@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { View,ListView,Text,TouchableHighlight, Button  } from 'react-native';
+import { View,ListView,Text,TouchableHighlight, Button,DeviceEventEmitter} from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const apiUrl = 'http://api.strider.site/doc';
 const docDir = dirs.DocumentDir+'/docs';
-console.log(dirs.DocumentDir);
-console.log(dirs.CacheDir);
-console.log(dirs.DCIMDir);
-console.log(dirs.DownloadDir);
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class DocList extends Component {
@@ -28,12 +24,9 @@ export default class DocList extends Component {
         if(fs.isDir(docDir)){
             // get file directory
             fs.ls(docDir).then((files)=>{
-                for(let i in files){
-                    files[i]=files[i].split('.')[0];
-                }
                 this.setState({
                     docList:files
-                })
+                });
             }).catch((err)=>{
                 console.log(err);
             });
@@ -49,6 +42,8 @@ export default class DocList extends Component {
             this.props.onStateChange({
                 doc:doc
             });
+            // emit event for createNewAudio view
+            DeviceEventEmitter.emit("docChanged",doc);
             // go back
             this.props.navigator.pop();
         }
@@ -76,7 +71,7 @@ export default class DocList extends Component {
                         fs.writeFile(
                             docDir+`/${doc.title}.json`,
                             JSON.stringify(doc),
-                            'utf-8'
+                            'utf8'
                         )
                     );
                 });
@@ -99,7 +94,7 @@ export default class DocList extends Component {
                 onPress={()=>this._downloadDoc()}/>
                 <ListView
                     dataSource={ds.cloneWithRows(this.state.docList)}
-                    renderRow={(rowData) => <TouchableHighlight onPress={()=>this._onDocSelected(rowData)}><Text>{rowData}</Text></TouchableHighlight>}
+                    renderRow={(rowData) => <TouchableHighlight onPress={()=>this._onDocSelected(rowData)}><Text>{rowData.split(".")[0]}</Text></TouchableHighlight>}
                     enableEmptySections={true}
                 />
             </View>

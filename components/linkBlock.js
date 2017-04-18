@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Text,  View,  TouchableHighlight } from 'react-native';
+import {View,  TouchableHighlight } from 'react-native';
+import {Text,Button } from 'native-base';
 
 export default class LinkBlock extends Component {
     _onPress(){
@@ -8,11 +9,7 @@ export default class LinkBlock extends Component {
     render() {
         return (
             /* jshint ignore: start */
-            <TouchableHighlight onPress = {()=>this._onPress()} style={{flex:1}}>
-                <View style={{backgroundColor:this.props.color,flex:1,flexDirection: 'column',justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={{fontSize:26}} >{this.props.text}</Text>
-                </View>
-            </TouchableHighlight>
+            <Button block style={{height:100,marginVertical:10,marginHorizontal:10,backgroundColor:this.props.color}} onPress={()=>this._onPress()}><Text>{this.props.text}</Text></Button>
             /* jshint ignore: end */
         );
     }

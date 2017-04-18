@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Text, Navigator, TouchableHighlight } from 'react-native';
+import {Navigator, TouchableHighlight, StyleSheet } from 'react-native';
 import HomeView from './homeView';
 import CreateNewAudio from './createNewAudio';
 import MyStudio from './myStudio';
 import DocList from './docList';
+import MusicList from './musicList';
+import { Container, Header, Title, Button, Left, Right, Body, Icon, Text } from 'native-base';
 export default class AppNavigator extends Component {
     constructor(props){
         super(props);
         this.state = {
-            doc:'No doc selected',
-            music: 'No music selected'
+            doc:undefined,
+            music: undefined
         }
     }
     _onStateChange(newState){
@@ -20,13 +22,15 @@ export default class AppNavigator extends Component {
             {title: 'Home', index: 0},
             {title: 'Create New', index: 1},
             {title: 'My Studio', index: 2},
-            {title: 'Doc List', index: 3}
+            {title: 'Doc List', index: 3},
+            {title: 'Music List', index: 4}
         ];
         return (
             /* jshint ignore: start */
             <Navigator
             initialRoute={routes[0]}
             initialRouteStack={routes}
+            style={{flex:1}}
             renderScene={(route, navigator) =>{
                 switch(route.index){
                     case 0:
@@ -40,6 +44,10 @@ export default class AppNavigator extends Component {
                         break;
                     case 3:
                         return <DocList navigator={navigator} routes={routes} onStateChange={(newState)=>this._onStateChange(newState)}/>
+                        break;
+                    case 4:
+                        return <MusicList navigator={navigator} routes={routes} onStateChange={(newState)=>this._onStateChange(newState)}/>
+                        break;
                     default:
                         return <Text>Hello {route.title}!</Text> 
                 }
@@ -52,23 +60,31 @@ export default class AppNavigator extends Component {
                             return null;
                             } else {
                                 return (
-                                    <TouchableHighlight onPress={() => navigator.pop()}>
-                                        <Text>Back</Text>
-                                    </TouchableHighlight>
+                                    <Button transparent onPress={() => navigator.pop()}>
+                                        <Icon name='arrow-back' />
+                                    </Button>
                                 );
                             }
                         },
                         RightButton: (route, navigator, index, navState) =>
-                        { return (<Text>Done</Text>); },
+                        { return (<Text></Text>); },
                         Title: (route, navigator, index, navState) =>
-                        { return (<Text>Awesome Nav Bar</Text>); },
+                        { return (<Title style={{fontSize:23,paddingTop:10}}>Awesome Reader</Title>); },
                     }}
-                    style={{backgroundColor: 'gray'}}
+                    style={styles.navibar}
                 />
             }
-            style={{paddingTop: 60}}
             />
             /* jshint ignore: end */
         );
     }
 }
+
+const styles = StyleSheet.create({
+    navibar:{
+        backgroundColor: '#81c04d',
+        paddingTop: 12,
+        paddingBottom: 10,
+        flex:1
+    }
+})

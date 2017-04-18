@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Text,View,Button,Platform,PermissionsAndroid } from 'react-native';
+import {DeviceEventEmitter,Text,View,Button,Platform,PermissionsAndroid, ScrollView } from 'react-native';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import RNFetchBlob from 'react-native-fetch-blob';
 const Sound = require('react-native-sound');
 let music; // Sound instance
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
+const docDir = dirs.DocumentDir+'/docs';
 const audioDir = dirs.DocumentDir+'/audio';
 //console.log(AudioUtils.DocumentDirectoryPath);
 
@@ -18,6 +19,7 @@ export default class CreateNewAudio extends Component {
             //recording: false,
             //stoppedRecording: false,
             //finished: false,
+            docContent: undefined,
             audioPath: AudioUtils.DocumentDirectoryPath + 'audio/test.aac',
             hasPermission: undefined,
         };
@@ -31,8 +33,22 @@ export default class CreateNewAudio extends Component {
         AudioEncodingBitRate: 32000
       });
     }
-    
+    _reloadDocContent(doc){
+        if(doc){
+            fs.readFile(`${docDir}/${doc}`,'uft8')
+                .then((data)=>{
+                    console.log(data);
+                    this.setState({
+                        docContent: JSON.parse(data).content
+                    })
+                })
+                .catch((err)=>{
+                    console.log("the error:"+err);
+                });
+        }
+    }
     componentDidMount() {
+        DeviceEventEmitter.addListener('docChanged',(doc)=>this._reloadDocContent(doc));
         // get permission
         this._checkPermission().then((hasPermission) => {
                 this.setState({ hasPermission });
@@ -44,6 +60,11 @@ export default class CreateNewAudio extends Component {
             // if audio path doesn't exist, mkdir
             fs.mkdir(audioDir);
         }
+        // get text content
+        this._reloadDocContent(this.props.doc);
+    }
+    componentWillUnMount(){
+         this.subscription.remove();
     }
      _checkPermission() {
         if (Platform.OS !== 'android') {
@@ -113,20 +134,35 @@ export default class CreateNewAudio extends Component {
     }
     // go to musicList
     _goToMusicList(){
-
+        this.props.navigator.push(this.props.routes[4]);
     }
     render() {
         return (
             /* jshint ignore: start */
-            <View>
-                <Text>Doc:{this.props.doc}</Text>
+            <View style={{flex:1}}>
+                <Text>Doc:{(()=>{
+                    if(this.props.doc){
+                        return this.props.doc.split(".")[0];
+                    }else{
+                        return "No doc selected"
+                    }
+                })()}</Text>
                 <Button title="Select Doc!" onPress={()=>this._goToDocList()}/>
-                <Text>Music:{this.props.music}</Text>
+                <Text>Music:{(()=>{
+                    if(this.props.music){
+                        return this.props.music.split(".")[0];
+                    }else{
+                        return "No music selected"
+                    }
+                })()}</Text>
                 <Button title="Select Music" onPress={()=>this._goToMusicList()}/>
                 <Button title="Start Recording!" onPress={()=>this._onPressRecordStart()}/>
                 <Button title="Finish Recording!" onPress={()=>this._onPressRecordStop()}/>
                 <Button title="Start Playing!" onPress={()=>this._onPressPlayStart()}/>
-                <Button title="Finish Playing!" onPress={()=>this._onPressPlayStop()}/>       
+                <Button title="Finish Playing!" onPress={()=>this._onPressPlayStop()}/> 
+                <ScrollView>
+                    <Text>{this.state.docContent}</Text>
+                </ScrollView> 
             </View>
             /* jshint ignore: end */
         );
