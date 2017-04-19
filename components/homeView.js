@@ -15,22 +15,6 @@ export default class HomeView extends Component {
                         <LinkBlock navigator = {this.props.navigator} routes = {this.props.routes} color="steelblue" dest="3"/>
                    
                 </Content>
-                <Footer >
-                    <FooterTab>
-                        <Button>
-                            <Text>Apps</Text>
-                        </Button>
-                        <Button>
-                            <Text>Camera</Text>
-                        </Button>
-                        <Button active>
-                            <Text>Navigate</Text>
-                        </Button>
-                        <Button>
-                            <Text>Contact</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
             </Container>
             
             /* jshint ignore: end */

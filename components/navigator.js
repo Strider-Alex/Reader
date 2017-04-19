@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {Navigator, TouchableHighlight, StyleSheet } from 'react-native';
-import HomeView from './homeView';
 import CreateNewAudio from './createNewAudio';
 import MyStudio from './myStudio';
 import DocList from './docList';
 import MusicList from './musicList';
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text } from 'native-base';
+import {Scene, Router} from 'react-native-router-flux';
 export default class AppNavigator extends Component {
     constructor(props){
         super(props);
@@ -27,54 +27,14 @@ export default class AppNavigator extends Component {
         ];
         return (
             /* jshint ignore: start */
-            <Navigator
-            initialRoute={routes[0]}
-            initialRouteStack={routes}
-            style={{flex:1}}
-            renderScene={(route, navigator) =>{
-                switch(route.index){
-                    case 0:
-                        return <HomeView navigator={navigator} routes={routes}/>
-                        break;
-                    case 1:
-                        return <CreateNewAudio navigator={navigator} routes={routes} doc={this.state.doc} music={this.state.music}/>
-                        break;
-                    case 2:
-                        return <MyStudio navigator={navigator} routes={routes}/>
-                        break;
-                    case 3:
-                        return <DocList navigator={navigator} routes={routes} onStateChange={(newState)=>this._onStateChange(newState)}/>
-                        break;
-                    case 4:
-                        return <MusicList navigator={navigator} routes={routes} onStateChange={(newState)=>this._onStateChange(newState)}/>
-                        break;
-                    default:
-                        return <Text>Hello {route.title}!</Text> 
-                }
-            }}
-            navigationBar={
-                <Navigator.NavigationBar
-                    routeMapper={{
-                        LeftButton: (route, navigator, index, navState) =>
-                        { if (route.index === 0) {
-                            return null;
-                            } else {
-                                return (
-                                    <Button transparent onPress={() => navigator.pop()}>
-                                        <Icon name='arrow-back' />
-                                    </Button>
-                                );
-                            }
-                        },
-                        RightButton: (route, navigator, index, navState) =>
-                        { return (<Text></Text>); },
-                        Title: (route, navigator, index, navState) =>
-                        { return (<Title style={{fontSize:23,paddingTop:10}}>Awesome Reader</Title>); },
-                    }}
-                    style={styles.navibar}
-                />
-            }
-            />
+            <Router>
+                <Scene key="root">
+                    <Scene key="createNew" component={CreateNewAudio} title="Create New" initial={true}/>
+                    <Scene key="myStudio" component={MyStudio} title="My Studio"/>
+                    <Scene key="docList" component={DocList} title="Doc List"/>
+                    <Scene key="musicList" component={MusicList} title="Music List"/>
+                </Scene>
+            </Router>
             /* jshint ignore: end */
         );
     }

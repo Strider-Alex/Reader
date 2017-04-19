@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter,Text,View,Button,Platform,PermissionsAndroid, ScrollView } from 'react-native';
+import {DeviceEventEmitter,View,Platform,PermissionsAndroid, ScrollView } from 'react-native';
+import { Footer, FooterTab, Button, Container, Content, Card, CardItem, Text, Icon } from 'native-base';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import RNFetchBlob from 'react-native-fetch-blob';
+import MyFooter from './myFooter';
+import {Actions} from 'react-native-router-flux';
 const Sound = require('react-native-sound');
 let music; // Sound instance
 const fs = RNFetchBlob.fs;
@@ -19,6 +22,8 @@ export default class CreateNewAudio extends Component {
             //recording: false,
             //stoppedRecording: false,
             //finished: false,
+            doc: undefined,
+            music: undefined,
             docContent: undefined,
             audioPath: AudioUtils.DocumentDirectoryPath + 'audio/test.aac',
             hasPermission: undefined,
@@ -48,7 +53,12 @@ export default class CreateNewAudio extends Component {
         }
     }
     componentDidMount() {
-        DeviceEventEmitter.addListener('docChanged',(doc)=>this._reloadDocContent(doc));
+        DeviceEventEmitter.addListener('docChanged',(doc)=>{
+            this.setState({
+                doc:doc
+            })
+            this._reloadDocContent(doc);
+        });
         // get permission
         this._checkPermission().then((hasPermission) => {
                 this.setState({ hasPermission });
@@ -61,7 +71,7 @@ export default class CreateNewAudio extends Component {
             fs.mkdir(audioDir);
         }
         // get text content
-        this._reloadDocContent(this.props.doc);
+        this._reloadDocContent(this.state.doc);
     }
     componentWillUnMount(){
          this.subscription.remove();
@@ -130,40 +140,45 @@ export default class CreateNewAudio extends Component {
     }
     // go docList
     _goToDocList(){
-        this.props.navigator.push(this.props.routes[3]);
+        Actions.docList();
     }
     // go to musicList
     _goToMusicList(){
-        this.props.navigator.push(this.props.routes[4]);
+        Actions.musicList();
     }
     render() {
         return (
             /* jshint ignore: start */
-            <View style={{flex:1}}>
-                <Text>Doc:{(()=>{
-                    if(this.props.doc){
-                        return this.props.doc.split(".")[0];
-                    }else{
-                        return "No doc selected"
-                    }
-                })()}</Text>
-                <Button title="Select Doc!" onPress={()=>this._goToDocList()}/>
+            <Container style={{marginTop:100}}>
+            <Content>
+                <Text>Doc：</Text>
+                <Button block onPress={()=>this._goToDocList()}>
+                    <Text>
+                        {(()=>{
+                            if(this.state.doc){
+                                return this.state.doc.split(".")[0];
+                            }else{
+                                return "Select Doc!"
+                            }
+                        })()}
+                    </Text>
+                </Button>
                 <Text>Music:{(()=>{
-                    if(this.props.music){
-                        return this.props.music.split(".")[0];
+                    if(this.state.music){
+                        return this.props.state.split(".")[0];
                     }else{
                         return "No music selected"
                     }
                 })()}</Text>
-                <Button title="Select Music" onPress={()=>this._goToMusicList()}/>
-                <Button title="Start Recording!" onPress={()=>this._onPressRecordStart()}/>
-                <Button title="Finish Recording!" onPress={()=>this._onPressRecordStop()}/>
-                <Button title="Start Playing!" onPress={()=>this._onPressPlayStart()}/>
-                <Button title="Finish Playing!" onPress={()=>this._onPressPlayStop()}/> 
-                <ScrollView>
-                    <Text>{this.state.docContent}</Text>
-                </ScrollView> 
-            </View>
+                <Button block onPress={()=>this._goToMusicList()}><Text>Select Music</Text></Button>
+                <Button block onPress={()=>this._onPressRecordStart()}><Text>Start Recording</Text></Button>
+                <Button block onPress={()=>this._onPressRecordStop()}><Text>Finish Recording!</Text></Button>
+                <Button block onPress={()=>this._onPressPlayStart()}><Text>Start Playing</Text></Button>
+                <Button block onPress={()=>this._onPressPlayStop()}><Text>Stop Playing</Text></Button> 
+                <Text>{this.state.docContent}</Text>
+            </Content>
+            <MyFooter/>
+            </Container>
             /* jshint ignore: end */
         );
     }

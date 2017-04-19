@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Text,  View,  Button } from 'react-native';
+import MyFooter from './myFooter';
+import { Footer, FooterTab, Button, Container, Content, Card, CardItem, Text, Icon } from 'native-base';
 const Sound = require('react-native-sound');
 let music; // Sound instance
 export default class MyStudio extends Component {
@@ -45,11 +46,14 @@ export default class MyStudio extends Component {
     render() {
         return (
             /* jshint ignore: start */
-            <View style={{flex:1}}>
-                <Button onPress = {()=>this._onPressStart()} title="play music" style={{flex:1}}/>
-                <Button onPress = {()=>this._onPressStop()} title="stop music" style={{flex:1}}/>
-                <Button onPress = {()=>this._onPressPause()} title="pause music" style={{flex:1}}/>
-            </View>
+            <Container>
+                <Content>
+                    <Button onPress = {()=>this._onPressStart()} title="play music" />
+                    <Button onPress = {()=>this._onPressStop()} title="stop music"/>
+                    <Button onPress = {()=>this._onPressPause()} title="pause music" />
+                </Content>
+                <MyFooter/>
+            </Container>
             /* jshint ignore: end */
         );
     }

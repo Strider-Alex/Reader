@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { View,ListView,Text,TouchableHighlight, Button,DeviceEventEmitter} from 'react-native';
+import { View,ListView,TouchableHighlight,DeviceEventEmitter} from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob';
+import { Footer, FooterTab, Button, Container, Content, Card, CardItem, Text, Icon } from 'native-base';
+import {Actions} from 'react-native-router-flux';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const apiUrl = 'http://api.strider.site/doc';
 const docDir = dirs.DocumentDir+'/docs';
-
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class DocList extends Component {
-   
+
     constructor(props){
         super(props);
         this.state = {
@@ -38,14 +39,10 @@ export default class DocList extends Component {
     }
     _onDocSelected(doc){
         if(doc){
-            // select doc
-            this.props.onStateChange({
-                doc:doc
-            });
             // emit event for createNewAudio view
             DeviceEventEmitter.emit("docChanged",doc);
             // go back
-            this.props.navigator.pop();
+            Actions.pop();
         }
     }
     // download default docs from the API
@@ -66,7 +63,8 @@ export default class DocList extends Component {
                 // write data to seperate JSON files
                 let tasks=[];
                 data.forEach((doc)=>{
-                    newState.docList.push(doc.title);
+                    console.log(docDir+`/${doc.title}.json`);
+                    newState.docList.push(`${doc.title}.json`);
                     tasks.push(
                         fs.writeFile(
                             docDir+`/${doc.title}.json`,
@@ -87,17 +85,23 @@ export default class DocList extends Component {
     render() {
         return (
             /* jshint ignore: start */
-            <View>
-                <Button title={(()=>{
-                    if(this.state.downloading) return "Downloading";
-                    else return "Dowload default docs";})()}
-                onPress={()=>this._downloadDoc()}/>
-                <ListView
-                    dataSource={ds.cloneWithRows(this.state.docList)}
-                    renderRow={(rowData) => <TouchableHighlight onPress={()=>this._onDocSelected(rowData)}><Text>{rowData.split(".")[0]}</Text></TouchableHighlight>}
-                    enableEmptySections={true}
-                />
-            </View>
+            <Container style={{marginTop:100}}>
+                <Content>
+                    <Button block onPress={()=>this._downloadDoc()}>
+                        <Text>
+                            {(()=>{
+                                if(this.state.downloading) return "Downloading";
+                                else return "Dowload default docs";
+                            })()}
+                        </Text>
+                    </Button>
+                    <ListView
+                        dataSource={ds.cloneWithRows(this.state.docList)}
+                        renderRow={(rowData) => <Button block onPress={()=>this._onDocSelected(rowData)}><Text>{rowData.split(".")[0]}</Text></Button>}
+                        enableEmptySections={true}
+                    />
+                </Content>
+            </Container>
             /* jshint ignore: end */
         );
     }
