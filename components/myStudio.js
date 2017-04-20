@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import MyFooter from './myFooter';
 import { Footer, FooterTab, Button, Container, Content, Card, CardItem, Text, Icon } from 'native-base';
 const Sound = require('react-native-sound');
 let music; // Sound instance
+import RNFetchBlob from 'react-native-fetch-blob';
+import {Actions} from 'react-native-router-flux';
+const fs = RNFetchBlob.fs;
+const dirs = fs.dirs;
+const docDir = dirs.DocumentDir+'/docs';
+const musicDir = dirs.DocumentDir+'/music';
+const audioDir = dirs.DocumentDir+'/audio';
 export default class MyStudio extends Component {
     // play or resume a muisc, release when it's done
     _playSound(music){
@@ -21,7 +27,7 @@ export default class MyStudio extends Component {
             this._playSound(music);
         }
         else{ //load song if it's not loaded
-            music = new Sound('whoosh.aac', Sound.MAIN_BUNDLE, (error) => {
+            music = new Sound(audioDir+'/test.aac', '', (error) => {
                 if (error) {
                     console.log('failed to load the sound', error);
                     return;
@@ -46,13 +52,12 @@ export default class MyStudio extends Component {
     render() {
         return (
             /* jshint ignore: start */
-            <Container>
+            <Container style={{marginTop:100}}>
                 <Content>
                     <Button onPress = {()=>this._onPressStart()} title="play music" />
                     <Button onPress = {()=>this._onPressStop()} title="stop music"/>
                     <Button onPress = {()=>this._onPressPause()} title="pause music" />
                 </Content>
-                <MyFooter/>
             </Container>
             /* jshint ignore: end */
         );
