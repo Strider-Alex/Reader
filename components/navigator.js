@@ -22,29 +22,22 @@ export default class AppNavigator extends Component {
         this.setState(newState);
     }
     render() {
-        const routes = [
-            {title: 'Home', index: 0},
-            {title: 'Create New', index: 1},
-            {title: 'My Studio', index: 2},
-            {title: 'Doc List', index: 3},
-            {title: 'Music List', index: 4}
-        ];
         return (
             /* jshint ignore: start */
             <Router>
                 <Scene key="modal" component={Modal}>
                     <Scene key="root">
                         <Scene key="main" tabs={true} initial={true} tabBarStyle={styles.tabBar}>
-                            <Scene key="createNew" component={CreateNewAudio} title="Create New" initial={true} icon={TabIcon}/>
-                            <Scene key="myStudio" component={MyStudio} title="My Studio" icon={TabIcon}/>
-                            <Scene key="share" tabs={true} title="Share" icon={TabIcon} tabBarStyle={styles.tabBarTop}>
-                                <Scene key="shareAudio" component={ShareMusic} title = "Audio" icon={TabIcon} hideNavBar={true} />
-                                <Scene key="shareDoc" component={ShareDoc} title = "Doc" icon={TabIcon} hideNavBar={true} />
-                                <Scene key="shareMusic" component={ShareMusic} title = "Music" icon={TabIcon} hideNavBar={true} />
+                            <Scene key="createNew" component={CreateNewAudio} title="新的作品" initial={true} icon={TabIcon}/>
+                            <Scene key="myStudio" component={MyStudio} title="工作室" icon={TabIcon}/>
+                            <Scene key="share" tabs={true} title="更多资源" icon={TabIcon} tabBarStyle={styles.tabBarTop}>
+                                <Scene key="shareAudio" component={ShareMusic} title = "作品" icon={TabIcon} hideNavBar={true} />
+                                <Scene key="shareDoc" component={ShareDoc} title = "文本" icon={TabIcon} hideNavBar={true} />
+                                <Scene key="shareMusic" component={ShareMusic} title = "伴奏" icon={TabIcon} hideNavBar={true} />
                             </Scene>
                         </Scene>
-                        <Scene key="docList" component={DocList} title="Doc List"/>
-                        <Scene key="musicList" component={MusicList} title="Music List"/>
+                        <Scene key="docList" component={DocList} title="选择文本"/>
+                        <Scene key="musicList" component={MusicList} title="选择伴奏"/>
                     </Scene>
                 </Scene>
             </Router>

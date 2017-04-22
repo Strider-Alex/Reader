@@ -57,7 +57,7 @@ export default class ShareDoc extends Component {
                                 return <Spinner color='blue' />
                             }
                             else{
-                                return <Text>Download Now!</Text>
+                                return <Text>下载推荐文本！</Text>
                             }
                         })()}
                     </Button>
