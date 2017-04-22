@@ -11,7 +11,6 @@ const dirs = fs.dirs;
 const docDir = dirs.DocumentDir+'/docs';
 const musicDir = dirs.DocumentDir+'/music';
 const audioDir = dirs.DocumentDir+'/audio';
-//console.log(AudioUtils.DocumentDirectoryPath);
 
 export default class CreateNewAudio extends Component {
     
@@ -34,7 +33,6 @@ export default class CreateNewAudio extends Component {
         };
     }
     _prepareRecordingPath(audioPath){
-        console.log(audioPath);
       AudioRecorder.prepareRecordingAtPath(audioPath, {
         SampleRate: 22050,
         Channels: 1,
@@ -47,7 +45,6 @@ export default class CreateNewAudio extends Component {
         if(doc){
             fs.readFile(`${docDir}/${doc}`,'uft8')
                 .then((data)=>{
-                    console.log(data);
                     this.setState({
                         docContent: JSON.parse(data).content
                     })
@@ -85,8 +82,6 @@ export default class CreateNewAudio extends Component {
         }
         // get text content
         this._reloadDocContent(this.state.doc);
-        fs.ls(audioDir)
-            .then((r)=>console.log(r))
     }
     componentWillUnMount(){
          this.subscription.remove();

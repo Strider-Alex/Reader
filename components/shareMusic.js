@@ -18,11 +18,11 @@ export default class ShareMusic extends Component {
                 const data = res.json().data;
                 this.setState({
                     musicList:data
-                })
+                });
             })
             .catch((err)=>{
                 console.log(err);
-            })
+            });
     }
     //download music from api
     _downloadMusic(music){
@@ -34,7 +34,7 @@ export default class ShareMusic extends Component {
             .fetch('GET', `${apiUrl}/music/${music}`)
             .then((res) => {
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
-                console.log('The file saved to ', res.path())
+                console.log('The file saved to ', res.path());
             })
             .catch((err)=>{
                 console.log(err);
