@@ -12,7 +12,7 @@ export default class ClickableListView extends Component{
                                 <CardItem>
                                     <Text>{e.split(".")[0]}</Text>
                                     <Right>
-                                        <Icon onPress={()=>this.props.click(e)} name={this.props.iconName}/>
+                                        <Icon onPress={()=>this.props.click(e,i)} name={(i==this.props.active)?this.props.activeIconName:this.props.iconName}/>
                                     </Right>
                                 </CardItem>
                             </Card>

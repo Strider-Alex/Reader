@@ -5,11 +5,12 @@ export default class MusicPlayer{
         this.musicObj = undefined;
     }
     // the core function to play or resume a muisc, release when it's done
-    _playSound(musicObj){
+    _playSound(musicObj,callback){
          musicObj.play((success) => {
             if (success) {
                 console.log('successfully finished playing');
                 musicObj.release();
+                callback(false); //sound stop playing, callback with false
             } else {
                 console.log('playback failed due to audio decoding errors');
             }
@@ -34,7 +35,7 @@ export default class MusicPlayer{
                 // loaded successfully
                 console.log('duration in seconds: ' + musicObj.getDuration() + 'number of channels: ' + musicObj.getNumberOfChannels());
                 // Play the sound with an onEnd callback
-                this._playSound(musicObj);
+                this._playSound(musicObj,callback);
                 if(callback){
                     callback(true); //callback with true, start playing
                 }

@@ -12,8 +12,23 @@ export default class MyStudio extends Component {
     constructor(props){
         super(props);
         this.state={
-            audioList:[]
+            audioList:[],
+            playing:-1 //-1: no music is playing
         };
+    }
+    _onClick(file,i){
+        player.musicPlayAndStop(`${audioDir}/${file}`,(playing)=>{
+            if(playing){
+                this.setState({
+                    playing:i
+                });
+            }
+            else{
+                this.setState({
+                    playing:-1
+                });
+            }
+        });
     }
     componentDidMount(){
         fs.ls(audioDir)
@@ -33,7 +48,8 @@ export default class MyStudio extends Component {
         return (
             /* jshint ignore: start */
             <Container style={{marginTop:100}}>
-                <ClickableListView data={this.state.audioList} iconName={"md-play"} click={(file)=>player.musicPlayAndStop(`${audioDir}/${file}`)}/>
+                <ClickableListView data={this.state.audioList} active={this.state.playing} activeIconName={"md-pause"} iconName={"md-play"} 
+                    click={(file,i)=>this._onClick(file,i)}/>
             </Container>
             /* jshint ignore: end */
         );

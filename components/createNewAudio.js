@@ -197,8 +197,6 @@ export default class CreateNewAudio extends Component {
                         }
                     })()}
                 </InputGroup>
-                
-                
                     <Card style={{marginTop:20}}>
                         <CardItem header style={{backgroundColor:"#EFEFF2"}}>
                             <Icon name="md-document" style={{color:"#007AFF"}}/>
