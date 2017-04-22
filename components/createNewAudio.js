@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {DeviceEventEmitter,View,Platform,PermissionsAndroid, ScrollView,Keyboard } from 'react-native';
 import {Button, Container, Content,Right,Text, Icon, Input,InputGroup,Card,CardItem,Body } from 'native-base';
-import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
-const Sound = require('react-native-sound');
-let musicObj; // Sound instance
+import MusicPlayer from './musicPlayer';
+import AudioRecorder from './audioRecorder';
+let player = new MusicPlayer();
+let recorder = new AudioRecorder();
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const docDir = dirs.DocumentDir+'/docs';
@@ -17,10 +18,6 @@ export default class CreateNewAudio extends Component {
     constructor(props){
         super(props);
         this.state = {
-            //currentTime: 0.0,
-            //recording: false,
-            //stoppedRecording: false,
-            //finished: false,
             audio:undefined,
             doc: undefined,
             music: undefined,
@@ -32,22 +29,13 @@ export default class CreateNewAudio extends Component {
             recording:false
         };
     }
-    _prepareRecordingPath(audioPath){
-      AudioRecorder.prepareRecordingAtPath(audioPath, {
-        SampleRate: 22050,
-        Channels: 1,
-        AudioQuality: "Low",
-        AudioEncoding: "aac",
-        AudioEncodingBitRate: 32000
-      });
-    }
     _reloadDocContent(doc){
         if(doc){
             fs.readFile(`${docDir}/${doc}`,'uft8')
                 .then((data)=>{
                     this.setState({
                         docContent: JSON.parse(data).content
-                    })
+                    });
                 })
                 .catch((err)=>{
                     console.log("the error:"+err);
@@ -60,7 +48,7 @@ export default class CreateNewAudio extends Component {
         DeviceEventEmitter.addListener('docChanged',(doc)=>{
             this.setState({
                 doc:doc
-            })
+            });
             this._reloadDocContent(doc);
         });
         //listen to music change event
@@ -69,7 +57,7 @@ export default class CreateNewAudio extends Component {
                 music:music
             });
         });
-        // get permission
+        // get permission of microphone
         this._checkPermission().then((hasPermission) => {
                 this.setState({ hasPermission });
 
@@ -102,70 +90,23 @@ export default class CreateNewAudio extends Component {
             return (result === true || result === PermissionsAndroid.RESULTS.GRANTED);
         });
     }
-    _recordStartAndStop(path){
-        //stop recording
-        if(this.state.recording){
-            AudioRecorder.stopRecording()
-                .then(()=>{
-                    //change state
-                    this.setState({
-                        recording:false
-                    });
-                })
-                .catch((err)=>{
-                    if(err) console.log(err);
-                });
-        }
-        else{
-            this._prepareRecordingPath(path);
-            AudioRecorder.startRecording()
-                .then(()=>{
-                    //change state
-                    this.setState({
-                        recording:true
-                    });
-                })
-                .catch((err)=>{
-                    if(err) console.log(err);
-                });
-        }
-    }
-    // the core function to play or resume a muisc, release when it's done
-    _playSound(musicObj){
-         musicObj.play((success) => {
-            if (success) {
-                console.log('successfully finished playing');
-                musicObj.release();
-            } else {
-                console.log('playback failed due to audio decoding errors');
-            }
-        })
-    }
-    // play/stop music/audio
-    _musicPlayAndStop(path){
-        if(musicObj!==undefined&&musicObj.isLoaded()){
-            musicObj.stop();
-            musicObj.release();
-            musicObj=undefined;
+    //on click, start or stop record
+    _recordOnClick(){
+        recorder.recordStartAndStop(`${audioDir}/${this.state.audio}.aac`,this.state.recording,(recording)=>{
             this.setState({
-                musicPlaying:false
-            })
-        }
-        else{ //load song if it's not loaded
-            musicObj = new Sound(path, '', (error) => {
-                if (error) {
-                    console.log('failed to load the sound', error);
-                    return;
-                } 
-                // loaded successfully
-                console.log('duration in seconds: ' + musicObj.getDuration() + 'number of channels: ' + musicObj.getNumberOfChannels());
-                // Play the sound with an onEnd callback
-                this._playSound(musicObj);
-                this.setState({
-                    musicPlaying:true
-                });
+                recording:recording
             });
-        }
+        });
+        //also play music
+        player.musicPlayAndStop(`${musicDir}/${this.state.music}`);
+    }
+    //on click, play or stop music
+    _musicOnClick(){
+        player.musicPlayAndStop(`${musicDir}/${this.state.music}`,(playing)=>{
+            this.setState({
+                musicPlaying:playing
+            });
+        });
     }
     // go docList
     _goToDocList(){
@@ -193,7 +134,7 @@ export default class CreateNewAudio extends Component {
                     <Input onFocus={()=>{Keyboard.dismiss();this._goToMusicList();}} value={this.state.music?this.state.music.split(".")[0]:""} placeholder={"Select Music"}/>
                     {(()=>{
                         if(this.state.music){
-                            return <Icon onPress={()=>this._musicPlayAndStop(`${musicDir}/${this.state.music}`)} name={this.state.musicPlaying?"md-pause":"md-play"}/>
+                            return <Icon onPress={()=>this._musicOnClick()} name={this.state.musicPlaying?"md-pause":"md-play"}/>
                         }
                     })()}
                 </InputGroup>
@@ -212,7 +153,7 @@ export default class CreateNewAudio extends Component {
                         </CardItem>
                         </Content>
                     </Card>
-                <Button block style={{marginHorizontal:50,marginVertical:15}} onPress={()=>{this._recordStartAndStop(`${audioDir}/${this.state.audio}.aac`);this._musicPlayAndStop(`${musicDir}/${this.state.music}`)}}>
+                <Button block style={{marginHorizontal:50,marginVertical:15}} onPress={()=>this._recordOnClick()}>
                     <Text>{this.state.recording?"Stop Recording":"Start Recording Now!"}</Text>
                 </Button>
             </Container>
