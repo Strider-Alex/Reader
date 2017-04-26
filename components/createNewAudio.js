@@ -29,19 +29,6 @@ export default class CreateNewAudio extends Component {
             recording:false
         };
     }
-    _reloadDocContent(doc){
-        if(doc){
-            fs.readFile(`${docDir}/${doc}`,'uft8')
-                .then((data)=>{
-                    this.setState({
-                        docData: JSON.parse(data)
-                    });
-                })
-                .catch((err)=>{
-                    console.log("the error:"+err);
-                });
-        }
-    }
     componentDidMount() {
         //listen to doc change event
         //reload doc content
@@ -73,6 +60,19 @@ export default class CreateNewAudio extends Component {
     }
     componentWillUnMount(){
          this.subscription.remove();
+    }
+    _reloadDocContent(doc){
+        if(doc){
+            fs.readFile(`${docDir}/${doc}`,'uft8')
+                .then((data)=>{
+                    this.setState({
+                        docData: JSON.parse(data)
+                    });
+                })
+                .catch((err)=>{
+                    console.log("the error:"+err);
+                });
+        }
     }
      _checkPermission() {
         if (Platform.OS !== 'android') {

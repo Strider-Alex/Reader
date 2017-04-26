@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import {Body, Button,Container, Content, Card, CardItem, Title,Text, Icon,Left,Spinner } from 'native-base';
-
 //props:
 //data - an array contain audio data
-//playing - index of playing audio
-//share - whether share button is needed
-//playClick - callback of audio play button
-//shareClick - callback of audio share button
-
-export default class AudioListView extends Component{
+//downloading - index of downloading audio
+//downloadClick - callback of audio download button
+export default class AudioDownloadView extends Component{
     render(){
         return(
             /*jshint ignore:start*/
@@ -21,7 +17,7 @@ export default class AudioListView extends Component{
                                 <CardItem style={{backgroundColor:"#EFEFF2"}}>
                                     <Body>
                                         <Text style={{fontWeight:"bold",fontSize:20}}>{e.title}</Text>
-                                        <Text note>您的杰作</Text>
+                                        <Text note>{e.author}</Text>
                                     </Body>
                                 </CardItem>
                                 <CardItem>
@@ -32,15 +28,18 @@ export default class AudioListView extends Component{
                                     </Body>
                                 </CardItem>
                                 <CardItem>
-                                        <Icon style={{color:"#007AFF"}} onPress={()=>this.props.playClick(e.title,i)} 
-                                                name={(i===this.props.playing)?"md-pause":"md-play"}/>
-                                        {   (this.props.share)?(
-                                                (i===this.props.share)?
-                                                <Spinner/>:
-                                                <Icon style={{color:"#007AFF"}} onPress={()=>this.props.shareClick(e.title,i)} 
-                                                    name="md-share"/>
-                                            ):undefined
-                                        }
+                                    <Body>
+                                        <Text note>{e.comment}</Text>
+                                    </Body>
+                                </CardItem>
+                                <CardItem>
+                                    <Button transparent>
+                                        <Icon active name="md-thumbs-up" />
+                                        <Text>{e.vote} Likes</Text>
+                                    </Button>
+                                    (i===this.props.downloading)?
+                                    <Spinner/>:
+                                    <Icon style={{color:"#007AFF"}} onPress={()=>this.props.downloadClick(e.title,i)} name="md-download"/>
                                 </CardItem>
                             </Card>
                         )
