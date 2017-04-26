@@ -32,9 +32,36 @@ export default class ShareAudio extends Component {
 
     // on click, download audio from api, store json file
     _onDownloadClick(file,i){
+        let audio = this.state.audioList[i];
         this.setState({
             downloading:i
         });
+        console.log(`${apiUrl}/reader/audio/download?_id=${audio._id}`);
+        RNFetchBlob
+            .config({
+             // response data will be saved to this path if it has access right.
+                path :`${otherDir}/${audio._id}.aac`
+            })
+            .fetch('GET',`${apiUrl}/reader/audio/download?_id=${audio._id}`)
+            .then((res)=>{
+                //store json file
+                return fs.writeFile(
+                    `${otherDir}/json/${audio._id}.json`,
+                    JSON.stringify(audio),
+                    'utf8'
+                );
+            })
+            .then(()=>{
+                this.setState({
+                    downloading:-1
+                });
+            })
+            .catch((err)=>{
+                console.log(err);
+                this.setState({
+                    downloading:-1
+                });
+            });
     }
     
     render(){    

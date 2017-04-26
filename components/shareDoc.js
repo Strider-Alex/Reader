@@ -54,7 +54,7 @@ export default class ShareDoc extends Component {
                     <Button block style={{marginHorizontal:20}} onPress={()=>this._downloadDoc()}>
                         {(()=>{
                             if(this.state.downloading){
-                                return <Spinner color='blue' />
+                                return <Spinner color='#007AFF' style={{height:5,width:5}} />
                             }
                             else{
                                 return <Text>下载推荐文本！</Text>

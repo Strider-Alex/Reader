@@ -15,7 +15,7 @@ export default class ClickableListView extends Component{
                                     <Right>
                                         {
                                             (this.props.activeIconName==="spinner"&&i===this.props.active)?
-                                            <Spinner/>:
+                                            <Spinner color='#007AFF' style={{height:5,width:5}}/>:
                                             <Icon style={{color:"#007AFF"}} onPress={()=>this.props.click(e,i)} name={(i===this.props.active)?this.props.activeIconName:this.props.iconName}/>
                                         }
                                     </Right>

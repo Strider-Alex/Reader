@@ -18,7 +18,7 @@ export default class Collection extends Component {
         };
     }
     _onPlayClick(file,i){
-        player.musicPlayAndStop(`${otherDir}/${file}.aac`,(playing)=>{
+        player.musicPlayAndStop(`${otherDir}/${this.state.audioList[i]._id}.aac`,(playing)=>{
             if(playing){
                 this.setState({
                     playing:i
@@ -31,9 +31,7 @@ export default class Collection extends Component {
             }
         });
     }
-    _onShareClick(file,i){
 
-    }
 
     componentDidMount(){
         
@@ -67,9 +65,7 @@ export default class Collection extends Component {
             /* jshint ignore: start */
             <Container style={{marginTop:100}}>
                 <AudioListView share={false} data={this.state.audioList} playing={this.state.playing}
-                    onClosed={()=>this.setState({modalVisible:false})} 
-                    playClick={(file,i)=>this._onPlayClick(file,i)}
-                    shareClick={(file,i)=>this._onShareClick(file,i)}/>
+                    playClick={(file,i)=>this._onPlayClick(file,i)} />
             </Container>
             /* jshint ignore: end */
         );

@@ -21,7 +21,7 @@ export default class AudioListView extends Component{
                                 <CardItem style={{backgroundColor:"#EFEFF2"}}>
                                     <Body>
                                         <Text style={{fontWeight:"bold",fontSize:20}}>{e.title}</Text>
-                                        <Text note>您的杰作</Text>
+                                        <Text note>{(e.author)?e.author:"您的杰作"}</Text>
                                     </Body>
                                 </CardItem>
                                 <CardItem>
@@ -31,12 +31,15 @@ export default class AudioListView extends Component{
                                         <Text note>作者：{e.doc.author}</Text>
                                     </Body>
                                 </CardItem>
+                                {
+                                    (e.comment)?<CardItem><Text>{e.comment}</Text></CardItem>:undefined
+                                }
                                 <CardItem>
                                         <Icon style={{color:"#007AFF"}} onPress={()=>this.props.playClick(e.title,i)} 
                                                 name={(i===this.props.playing)?"md-pause":"md-play"}/>
                                         {   (this.props.share)?(
                                                 (i===this.props.share)?
-                                                <Spinner/>:
+                                                <Spinner color='#007AFF' style={{height:5,width:5}}/>:
                                                 <Icon style={{color:"#007AFF"}} onPress={()=>this.props.shareClick(e.title,i)} 
                                                     name="md-share"/>
                                             ):undefined

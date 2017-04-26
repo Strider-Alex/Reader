@@ -29,7 +29,7 @@ export default class AudioDownloadView extends Component{
                                 </CardItem>
                                 <CardItem>
                                     <Body>
-                                        <Text note>{e.comment}</Text>
+                                        <Text>{e.comment}</Text>
                                     </Body>
                                 </CardItem>
                                 <CardItem>
