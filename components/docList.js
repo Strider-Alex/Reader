@@ -49,7 +49,10 @@ export default class DocList extends Component {
                 <Content>
                     <ListView
                         dataSource={ds.cloneWithRows(this.state.docList)}
-                        renderRow={(rowData) => <Button block onPress={()=>this._onDocSelected(rowData)}><Text>{rowData.split(".")[0]}</Text></Button>}
+                        renderRow={(rowData) => (
+                            <Button block transparent={true} onPress={()=>this._onDocSelected(rowData)}>
+                                <Text>{rowData.split(".")[0]}</Text>
+                            </Button>)}
                         enableEmptySections={true}
                     />
                 </Content>

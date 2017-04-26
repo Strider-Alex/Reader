@@ -19,7 +19,7 @@ export default class ShareDoc extends Component {
             downloading:true
         });
         RNFetchBlob
-            .fetch('GET', apiUrl+'/doc?default=true')
+            .fetch('GET', apiUrl+'/reader/doc?default=true')
             .then((res)=>{
                 let data = res.json().data;
                 // new state object

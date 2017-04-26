@@ -48,7 +48,7 @@ export default class MusicList extends Component {
                 <Content>
                     <ListView
                         dataSource={ds.cloneWithRows(this.state.musicList)}
-                        renderRow={(rowData) => <Button block onPress={()=>this._onMusicSelected(rowData)}><Text>{rowData.split(".")[0]}</Text></Button>}
+                        renderRow={(rowData) => <Button transparent={true} block onPress={()=>this._onMusicSelected(rowData)}><Text>{rowData.split(".")[0]}</Text></Button>}
                         enableEmptySections={true}
                     />
                 </Content>

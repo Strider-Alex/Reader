@@ -9,12 +9,13 @@ export default class ShareMusic extends Component {
     constructor(props){
         super(props);
         this.state={
-            musicList:[]
+            musicList:[],
+            downloading:-1
         };
     }
     componentDidMount(){
         RNFetchBlob
-            .fetch('GET',apiUrl+'/music')
+            .fetch('GET',apiUrl+'/reader/music')
             .then((res)=>{
                 const data = res.json().data;
                 this.setState({
@@ -26,18 +27,27 @@ export default class ShareMusic extends Component {
             });
     }
     //download music from api
-    _downloadMusic(music){
+    _downloadMusic(music,i){
+        this.setState({
+            downloading:i
+        });
         RNFetchBlob
             .config({
              // response data will be saved to this path if it has access right.
                 path :`${musicDir}/${music}`
             })
-            .fetch('GET', `${apiUrl}/music/${music}`)
+            .fetch('GET', `${apiUrl}/reader/music/${music}`)
             .then((res) => {
+                this.setState({
+                    downloading:-1
+                });
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
                 console.log('The file saved to ', res.path());
             })
             .catch((err)=>{
+                this.setState({
+                    downloading:-1
+                });
                 console.log(err);
             });
     }
@@ -46,20 +56,7 @@ export default class ShareMusic extends Component {
         return(
             <Container style={{top:80}}>
                 <Content>
-                    {
-                        this.state.musicList.map((music,i)=>{
-                            return( 
-                                <Card key={i}>
-                                    <CardItem>
-                                        <Text>{music.split(".")[0]}</Text>
-                                        <Right>
-                                            <Icon name="md-download" onPress={()=>this._downloadMusic(music)}/>
-                                        </Right>
-                                    </CardItem>
-                                </Card>
-                            )
-                        })
-                    }
+                    <ClickableListView data={this.state.musicList} iconName="md-download" active={this.state.downloading} activeIconName="spinner" click={(music,i)=>this._downloadMusic(music,i)}/>
                 </Content>
             </Container>
         );

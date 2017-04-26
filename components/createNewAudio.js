@@ -21,7 +21,7 @@ export default class CreateNewAudio extends Component {
             audio:undefined,
             doc: undefined,
             music: undefined,
-            docContent: undefined,
+            docData: undefined,
             hasPermission: undefined,
             // if the music is playing now
             musicPlaying:false,
@@ -34,7 +34,7 @@ export default class CreateNewAudio extends Component {
             fs.readFile(`${docDir}/${doc}`,'uft8')
                 .then((data)=>{
                     this.setState({
-                        docContent: JSON.parse(data).content
+                        docData: JSON.parse(data)
                     });
                 })
                 .catch((err)=>{
@@ -96,9 +96,28 @@ export default class CreateNewAudio extends Component {
             this.setState({
                 recording:recording
             });
+            //if recording stop,write json file
+            if(!recording){
+                let data = {};
+                data.doc = this.state.docData;
+                data.title = this.state.audio;
+                fs.writeFile(
+                    audioDir+`/json/${this.state.audio}.json`,
+                    JSON.stringify(data),
+                    'utf8'
+                )
+                .then(()=>{
+                    //jump to studio
+                    Actions.myStudio();
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+            }
         });
-        //also play music
+        //also play/stop music
         player.musicPlayAndStop(`${musicDir}/${this.state.music}`);
+        
     }
     //on click, play or stop music
     _musicOnClick(){
@@ -123,7 +142,7 @@ export default class CreateNewAudio extends Component {
             
                 <InputGroup borderType='underline'>
                     <Icon name="md-home" />
-                    <Input   onChangeText={(audio)=>this.setState({audio:audio})} value={this.state.audio} placeholder={"作品名称"}/>
+                    <Input  maxLength={20} onChangeText={(audio)=>this.setState({audio:audio})} value={this.state.audio} placeholder={"作品名称"}/>
                 </InputGroup>
                 <InputGroup>
                     <Icon name="md-book" />
@@ -147,7 +166,7 @@ export default class CreateNewAudio extends Component {
                         <CardItem >
                             <Body>
                                 <Text style={{color:"#585858"}}>
-                                    {this.state.docContent}
+                                    {this.state.docData?this.state.docData.content:""}
                                 </Text>
                             </Body>
                         </CardItem>

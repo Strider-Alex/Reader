@@ -4,6 +4,7 @@ import CreateNewAudio from './createNewAudio';
 import MyStudio from './myStudio';
 import DocList from './docList';
 import MusicList from './musicList';
+import ShareAudio from './shareAudio';
 import ShareMusic from './shareMusic';
 import ShareDoc from './shareDoc';
 import TabIcon from './tabIcon';
@@ -31,7 +32,7 @@ export default class AppNavigator extends Component {
                             <Scene key="createNew" component={CreateNewAudio} title="新的作品" initial={true} icon={TabIcon}/>
                             <Scene key="myStudio" component={MyStudio} title="工作室" icon={TabIcon}/>
                             <Scene key="share" tabs={true} title="更多资源" icon={TabIcon} tabBarStyle={styles.tabBarTop}>
-                                <Scene key="shareAudio" component={ShareMusic} title = "作品" icon={TabIcon} hideNavBar={true} />
+                                <Scene key="shareAudio" component={ShareAudio} title = "作品" icon={TabIcon} hideNavBar={true} />
                                 <Scene key="shareDoc" component={ShareDoc} title = "文本" icon={TabIcon} hideNavBar={true} />
                                 <Scene key="shareMusic" component={ShareMusic} title = "伴奏" icon={TabIcon} hideNavBar={true} />
                             </Scene>
@@ -51,7 +52,6 @@ const styles = StyleSheet.create({
         backgroundColor:'#EFEFF2'
     },
     tabBarTop:{
-        backgroundColor:'#3399FF',
         top:0
     }
 })
