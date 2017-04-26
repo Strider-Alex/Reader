@@ -42,7 +42,7 @@ export default class ShareAudio extends Component {
             /*jshint ignore:start*/
             <Container style={{marginTop:100}}>
                 <AudioDownloadView data={this.state.audioList} downloading={this.state.downloading}
-                    downloadClick={(file,i)=>this._onPlayClick(file,i)}
+                    downloadClick={(file,i)=>this._onDownloadClick(file,i)}
                  />
             </Container>
             /*jshint ignore:end*/

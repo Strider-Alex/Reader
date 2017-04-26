@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Body, Button,Container, Content, Card, CardItem, Title,Text, Icon,Left,Spinner } from 'native-base';
+import {Body, Button,Container, Content, Card, CardItem, Title,Text, Icon,Left,Spinner,Right } from 'native-base';
 //props:
 //data - an array contain audio data
 //downloading - index of downloading audio
@@ -33,13 +33,11 @@ export default class AudioDownloadView extends Component{
                                     </Body>
                                 </CardItem>
                                 <CardItem>
-                                    <Button transparent>
-                                        <Icon active name="md-thumbs-up" />
-                                        <Text>{e.vote} Likes</Text>
-                                    </Button>
-                                    (i===this.props.downloading)?
-                                    <Spinner/>:
-                                    <Icon style={{color:"#007AFF"}} onPress={()=>this.props.downloadClick(e.title,i)} name="md-download"/>
+                                    <Icon style={{color:"#007AFF"}} active name="md-thumbs-up" />
+                                    <Text style={{marginRight:20}}>{e.vote} Likes</Text>
+                                     {(i===this.props.downloading)?
+                                    <Spinner color='#007AFF' style={{height:5,width:5}}/>:
+                                    <Icon style={{color:"#007AFF"}} onPress={()=>this.props.downloadClick(e.title,i)} name="md-download"/>}
                                 </CardItem>
                             </Card>
                         )
