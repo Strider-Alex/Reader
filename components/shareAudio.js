@@ -67,7 +67,7 @@ export default class ShareAudio extends Component {
     render(){    
         return(
             /*jshint ignore:start*/
-            <Container style={{marginTop:100}}>
+            <Container style={{marginVertical:60}}>
                 <AudioDownloadView data={this.state.audioList} downloading={this.state.downloading}
                     downloadClick={(file,i)=>this._onDownloadClick(file,i)}
                  />

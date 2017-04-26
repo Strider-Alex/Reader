@@ -16,15 +16,15 @@ export default class AudioDownloadView extends Component{
                             <Card key={i}>
                                 <CardItem style={{backgroundColor:"#EFEFF2"}}>
                                     <Body>
-                                        <Text style={{fontWeight:"bold",fontSize:20}}>{e.title}</Text>
-                                        <Text note>{e.author}</Text>
+                                        <Text style={{fontWeight:"bold",fontSize:16}}>{e.title}</Text>
+                                        <Text note>{`颂客：${e.author}`}</Text>
                                     </Body>
                                 </CardItem>
                                 <CardItem>
                                     <Body>
                                         <Text note>文段：{e.doc.title}</Text>
                                         <Text note>出处：{e.doc.book}</Text>
-                                        <Text note>作者：{e.doc.author}</Text>
+                                        <Text note>文段作者：{e.doc.author}</Text>
                                     </Body>
                                 </CardItem>
                                 <CardItem>
@@ -34,7 +34,7 @@ export default class AudioDownloadView extends Component{
                                 </CardItem>
                                 <CardItem>
                                     <Icon style={{color:"#007AFF"}} active name="md-thumbs-up" />
-                                    <Text style={{marginRight:20}}>{e.vote} Likes</Text>
+                                    <Text style={{marginRight:20}}>{e.vote}人喜欢</Text>
                                      {(i===this.props.downloading)?
                                     <Spinner color='#007AFF' style={{height:5,width:5}}/>:
                                     <Icon style={{color:"#007AFF"}} onPress={()=>this.props.downloadClick(e.title,i)} name="md-download"/>}

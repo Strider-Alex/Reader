@@ -20,15 +20,15 @@ export default class AudioListView extends Component{
                             <Card key={i}>
                                 <CardItem style={{backgroundColor:"#EFEFF2"}}>
                                     <Body>
-                                        <Text style={{fontWeight:"bold",fontSize:20}}>{e.title}</Text>
-                                        <Text note>{(e.author)?e.author:"您的杰作"}</Text>
+                                        <Text style={{fontWeight:"bold",fontSize:16}}>{e.title}</Text>
+                                        <Text note>{(e.author)?`颂客：${e.author}`:"您的杰作"}</Text>
                                     </Body>
                                 </CardItem>
                                 <CardItem>
                                     <Body>
                                         <Text note>文段：{e.doc.title}</Text>
                                         <Text note>出处：{e.doc.book}</Text>
-                                        <Text note>作者：{e.doc.author}</Text>
+                                        <Text note>文段作者：{e.doc.author}</Text>
                                     </Body>
                                 </CardItem>
                                 {
