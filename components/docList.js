@@ -47,6 +47,7 @@ export default class DocList extends Component {
             /* jshint ignore: start */
             <Container style={{marginTop:100}}>
                 <Content>
+                    {(this.state.docList.length)?
                     <ListView
                         dataSource={ds.cloneWithRows(this.state.docList)}
                         renderRow={(rowData) => (
@@ -55,6 +56,8 @@ export default class DocList extends Component {
                             </Button>)}
                         enableEmptySections={true}
                     />
+                    :<Container><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有文本，立刻去“分享”下载吧~</Text></Container>
+                    }
                 </Content>
             </Container>
             /* jshint ignore: end */

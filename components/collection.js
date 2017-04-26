@@ -63,9 +63,14 @@ export default class Collection extends Component {
     render() {
         return (
             /* jshint ignore: start */
-            <Container style={{marginTop:100}}>
-                <AudioListView share={false} data={this.state.audioList} playing={this.state.playing}
-                    playClick={(file,i)=>this._onPlayClick(file,i)} />
+            <Container>
+                {(this.state.audioList.length)?
+                <Container style={{marginVertical:60}}>
+                    <AudioListView share={false} data={this.state.audioList} playing={this.state.playing}
+                        playClick={(file,i)=>this._onPlayClick(file,i)} />
+                </Container>
+                :<Container style={{marginTop:100}}><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有收藏，立刻去“分享”下载吧~</Text></Container>
+                }
             </Container>
             /* jshint ignore: end */
         );

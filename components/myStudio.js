@@ -104,31 +104,39 @@ export default class MyStudio extends Component {
         return (
             /* jshint ignore: start */
             <Container>
-            <Modal onClosed={()=>this.setState({modalVisible:false})} isOpen={this.state.modalVisible} position="center" style={{padding:20,height:400,width:300,borderRadius:10}}>
-                    <Container>
-                        <Content>
-                                <Text>将作品和大家分享</Text>
-                                <InputGroup borderType='regular'>
-                                    <Icon name="md-person" />
-                                    <Input  maxLength={20} onChangeText={(nickname)=>this.setState({nickname:nickname})} value={this.state.nickname} placeholder={"您的昵称"}/>
-                                </InputGroup>
-                                <InputGroup borderType='regular'>
-                                    <Textarea   style={{height:200,width:200}} onChangeText={(comment)=>this.setState({comment:comment})} value={this.state.comment} placeholder={"您的评论"}/>
-                                </InputGroup>
-                                <Button block onPress={()=>this._shareToClound()}>
-                                    {(this.state.uploading)?<Spinner/>:<Text>现在分享！</Text>}
-                                </Button>
-                        </Content>
-                    </Container>
-                </Modal>
-                {(this.state.modalVisible)?undefined:(
-                    <Container style={{marginTop:100}}>
-                        <AudioListView share={true} data={this.state.audioList} playing={this.state.playing}
-                            playClick={(file,i)=>this._onPlayClick(file,i)}
-                            shareClick={(file,i)=>this._onShareClick(file,i)} />
-                    </Container>
-                )}
+                {(this.state.audioList.length)?
+                (
+                <Container style={{marginVertical:60}}>
+                    <Modal onClosed={()=>this.setState({modalVisible:false})} isOpen={this.state.modalVisible} position="center" style={{padding:20,height:400,width:300,borderRadius:10}}>
+                        <Container>
+                            <Content>
+                                    <Text>将作品和大家分享</Text>
+                                    <InputGroup borderType='regular'>
+                                        <Icon name="md-person" />
+                                        <Input  maxLength={20} onChangeText={(nickname)=>this.setState({nickname:nickname})} value={this.state.nickname} placeholder={"您的昵称"}/>
+                                    </InputGroup>
+                                    <InputGroup borderType='regular'>
+                                        <Textarea   style={{height:200,width:200}} onChangeText={(comment)=>this.setState({comment:comment})} value={this.state.comment} placeholder={"您的评论"}/>
+                                    </InputGroup>
+                                    <Button block onPress={()=>this._shareToClound()}>
+                                        {(this.state.uploading)?<Spinner/>:<Text>现在分享！</Text>}
+                                    </Button>
+                            </Content>
+                        </Container>
+                    </Modal>
+                    {(this.state.modalVisible)?undefined:(
+                        <Container>
+                            <AudioListView share={true} data={this.state.audioList} playing={this.state.playing}
+                                playClick={(file,i)=>this._onPlayClick(file,i)}
+                                shareClick={(file,i)=>this._onShareClick(file,i)} />
+                        </Container>
+                    )}
+                </Container>
+                )
+                :<Container style={{marginTop:100}}><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有作品，立刻去“新的作品”创造属于您的佳作吧~</Text></Container>
+                }
             </Container>
+            
             /* jshint ignore: end */
         );
     }

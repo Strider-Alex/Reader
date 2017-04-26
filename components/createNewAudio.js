@@ -92,31 +92,29 @@ export default class CreateNewAudio extends Component {
     }
     //on click, start or stop record
     _recordOnClick(){
-        recorder.recordStartAndStop(`${audioDir}/${this.state.audio}.aac`,this.state.recording,(recording)=>{
-            this.setState({
-                recording:recording
-            });
-            //if recording stop,write json file
-            if(!recording){
-                let data = {};
-                data.doc = this.state.docData;
-                data.title = this.state.audio;
-                fs.writeFile(
-                    audioDir+`/json/${this.state.audio}.json`,
-                    JSON.stringify(data),
-                    'utf8'
-                )
-                .then(()=>{
-                    //jump to studio
-                    Actions.myStudio();
-                })
-                .catch((err)=>{
-                    console.log(err);
+        if(this.state.audio&&this.state.music&&this.state.doc){
+            recorder.recordStartAndStop(`${audioDir}/${this.state.audio}.aac`,this.state.recording,(recording)=>{
+                this.setState({
+                    recording:recording
                 });
-            }
-        });
-        //also play/stop music
-        player.musicPlayAndStop(`${musicDir}/${this.state.music}`);
+                //if recording stop,write json file
+                if(!recording){
+                    let data = {};
+                    data.doc = this.state.docData;
+                    data.title = this.state.audio;
+                    fs.writeFile(
+                        audioDir+`/json/${this.state.audio}.json`,
+                        JSON.stringify(data),
+                        'utf8'
+                    )
+                    .catch((err)=>{
+                        console.log(err);
+                    });
+                }
+            });
+            //also play/stop music
+            player.musicPlayAndStop(`${musicDir}/${this.state.music}`);
+        }
         
     }
     //on click, play or stop music

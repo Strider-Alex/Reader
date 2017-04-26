@@ -46,11 +46,14 @@ export default class MusicList extends Component {
             /* jshint ignore: start */
             <Container style={{marginTop:100}}>
                 <Content>
+                    {(this.state.musicList.length)?
                     <ListView
                         dataSource={ds.cloneWithRows(this.state.musicList)}
                         renderRow={(rowData) => <Button transparent={true} block onPress={()=>this._onMusicSelected(rowData)}><Text>{rowData.split(".")[0]}</Text></Button>}
                         enableEmptySections={true}
                     />
+                    :<Container><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有伴奏，立刻去“分享”看看其他颂客的作品吧~</Text></Container>
+                    }
                 </Content>
             </Container>
             /* jshint ignore: end */
