@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Body,Container, Content, Card, CardItem, Text, Textarea, Icon, Input, InputGroup,Spinner } from 'native-base';
+import {Button, Body,Container, Content, Card, CardItem, Text, Textarea, Icon, Input, InputGroup,Spinner,Toast } from 'native-base';
 import AudioDownloadView from './audioDownloadView';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
@@ -54,6 +54,12 @@ export default class ShareAudio extends Component {
             .then(()=>{
                 this.setState({
                     downloading:-1
+                });
+                // show toast messages: download succeed!
+                Toast.show({
+                    text: '作品已添加至我的收藏',
+                    position: 'bottom',
+                    buttonText: '好'
                 });
             })
             .catch((err)=>{

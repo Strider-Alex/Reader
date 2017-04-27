@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Content, Button,Text,Spinner} from 'native-base';
+import {Container, Content, Button,Text,Spinner,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
@@ -41,6 +41,14 @@ export default class ShareDoc extends Component {
                 this.setState(newState);
                 // return all tasks
                 return Promise.all(tasks);
+            })
+            .then(()=>{
+                // show toast messages: download succeed!
+                Toast.show({
+                    text: '文本下载成功',
+                    position: 'bottom',
+                    buttonText: '好'
+                });
             })
             .catch((err)=>{
                 console.log(err);

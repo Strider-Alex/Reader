@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {DeviceEventEmitter,View,Platform,PermissionsAndroid, ScrollView,Keyboard } from 'react-native';
-import {Button, Container, Content,Right,Text, Icon, Input,InputGroup,Card,CardItem,Body } from 'native-base';
+import {Button, Container, Content,Text, Icon, Input,InputGroup,Card,CardItem,Body, Toast } from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 import MusicPlayer from './musicPlayer';
@@ -107,6 +107,14 @@ export default class CreateNewAudio extends Component {
                         JSON.stringify(data),
                         'utf8'
                     )
+                    .then(()=>{
+                        // show toast messages: record succeed!
+                        Toast.show({
+                            text: '作品已添加至工作室',
+                            position: 'bottom',
+                            buttonText: '好'
+                        });
+                    })
                     .catch((err)=>{
                         console.log(err);
                     });

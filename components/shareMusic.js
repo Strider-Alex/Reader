@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Content, Card, CardItem, Text, Button,Icon,Right} from 'native-base';
+import {Container, Content, Card, CardItem, Text, Button,Icon,Right,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ClickableListView from './clickableListView';
 const dirs = RNFetchBlob.fs.dirs;
@@ -40,6 +40,12 @@ export default class ShareMusic extends Component {
             .then((res) => {
                 this.setState({
                     downloading:-1
+                });
+                // show toast messages: download succeed!
+                Toast.show({
+                    text: '伴奏下载成功',
+                    position: 'bottom',
+                    buttonText: '好'
                 });
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
                 console.log('The file saved to ', res.path());

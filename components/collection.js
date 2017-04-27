@@ -14,6 +14,7 @@ export default class Collection extends Component {
         super(props);
         this.state={
             audioList:[],
+            none:false,
             playing:-1 //-1: no music is playing
         };
     }
@@ -45,12 +46,13 @@ export default class Collection extends Component {
                 return Promise.all(tasks);
             })
             .then((dataSet)=>{
-                audioList=[];
+                let audioList=[];
                 for(let data of dataSet){
                     audioList.push(JSON.parse(data));
                 }
                 this.setState({
-                    audioList:audioList
+                    audioList:audioList,
+                    none:(audioList.length===0)
                 });
                 console.log(audioList);
             })
@@ -58,13 +60,17 @@ export default class Collection extends Component {
                 console.log(err);
                 // create directory if not exist 
                 fs.mkdir(`${otherDir}/json`);
+                this.setState({
+                    audioList:[],
+                    none:true
+                });
             });
     }
     render() {
         return (
             /* jshint ignore: start */
             <Container>
-                {(this.state.audioList.length)?
+                {(!this.state.none)?
                 <Container style={{marginVertical:60}}>
                     <AudioListView share={false} data={this.state.audioList} playing={this.state.playing}
                         playClick={(file,i)=>this._onPlayClick(file,i)} />

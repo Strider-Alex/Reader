@@ -19,6 +19,7 @@ export default class MyStudio extends Component {
             comment:undefined,
             selected:-1, //-1: no audio is selected
             audioList:[],
+            none:false,
             uploading:false, //if the app is uploading
             playing:-1 //-1: no music is playing
         };
@@ -35,18 +36,23 @@ export default class MyStudio extends Component {
                 return Promise.all(tasks);
             })
             .then((dataSet)=>{
-                audioList=[];
+                let audioList=[];
                 for(let data of dataSet){
                     audioList.push(JSON.parse(data));
                 }
                 this.setState({
-                    audioList:audioList
+                    audioList:audioList,
+                    none:(audioList.length===0)
                 });
             })
             .catch((err)=>{
                 console.log(err);
                 // create directory if not exist 
                 fs.mkdir(`${audioDir}/json`);
+                this.setState({
+                    audioList:[],
+                    none:true
+                });
             });
     }
     //on click, play or stop audio
@@ -104,7 +110,7 @@ export default class MyStudio extends Component {
         return (
             /* jshint ignore: start */
             <Container>
-                {(this.state.audioList.length)?
+                {(!this.state.none)?
                 (
                 <Container style={{marginVertical:60}}>
                     <Modal onClosed={()=>this.setState({modalVisible:false})} isOpen={this.state.modalVisible} position="center" style={{padding:20,height:400,width:300,borderRadius:10}}>
