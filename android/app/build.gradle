@@ -87,7 +87,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.awesomeproject"
+        applicationId "rn.songke.ykf"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -135,6 +135,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-splash-screen')
     compile project(':react-native-audio')
     compile project(':react-native-fetch-blob')
     compile project(':react-native-sound')

@@ -3,6 +3,7 @@ package com.awesomeproject;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.cboy.rn.splashscreen.SplashScreenReactPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.zmxv.RNSound.RNSoundPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new ReactNativeAudioPackage(),
             new RNFetchBlobPackage(),
             new RNSoundPackage()

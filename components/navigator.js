@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Navigator, TouchableHighlight, StyleSheet } from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import CreateNewAudio from './createNewAudio';
 import MyStudio from './myStudio';
 import DocList from './docList';
@@ -20,6 +21,9 @@ export default class AppNavigator extends Component {
             doc:undefined,
             music: undefined
         }
+    }
+    componentDidMount() {
+        SplashScreen.hide();
     }
     _onStateChange(newState){
         this.setState(newState);
