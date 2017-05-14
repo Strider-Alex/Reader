@@ -1,14 +1,14 @@
-//music schema
-export default class Music {}
+//audio schema
+export default class Doc {}
 Music.schema = {
-  name: 'Music',
+  name: 'Doc',
   primaryKey:'id',
   properties: {
     id:'int',
     title:  'string',
     author: 'string',
-    size: 'int',
-    duration:'int',
+    book:'string',
+    length: 'int',
     date:'date'
   }
 };

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter,View,Platform,PermissionsAndroid, ScrollView,Keyboard } from 'react-native';
+import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard } from 'react-native';
 import {Button, Container, Content,Text, Icon, Input,InputGroup,Card,CardItem,Body, Toast } from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
