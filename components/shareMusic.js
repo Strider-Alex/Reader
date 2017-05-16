@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Content, Card, CardItem, Text, Button,Icon,Right,Toast} from 'native-base';
+import {Container, Content,Text, Button,Icon,Right,Left,List,ListItem,Thumbnail,Body} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ClickableListView from './clickableListView';
 const dirs = RNFetchBlob.fs.dirs;
@@ -60,12 +60,45 @@ export default class ShareMusic extends Component {
     render(){
         /*jshint ignore:start*/
         return(
-            <Container style={{top:80}}>
+            <Container>
                 <Content>
-                    <ClickableListView data={this.state.musicList} iconName="md-download" active={this.state.downloading} activeIconName="spinner" click={(music,i)=>this._downloadMusic(music,i)}/>
+                    <List>
+                        {
+                            this.state.musicList.map((music,i)=>{
+                                return(
+                                    <ListItem avatar button key={i}>
+                                        <Left>
+                                            <Thumbnail source={require('../image/ic_launcher.png')} style={styles.musicImage}/>
+                                        </Left>                        
+                                        <Body>
+                                            <Text style={styles.musicTitle}>{music}</Text>
+                                            <Text note>{music.author}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+i}</Text>
+                                        </Right>
+                                    </ListItem>
+                                )
+                            })
+                        }
+                    </List>
                 </Content>
             </Container>
         );
         /*jshint ignore:end*/
     }
 }
+
+const styles={
+    musicImage:{
+        height:40,
+        width:40
+    },
+    musicTitle:{
+        color:'#008975'
+    },
+    likeIcon:{
+        color:'#FF4081',
+        fontSize:20
+    }
+};

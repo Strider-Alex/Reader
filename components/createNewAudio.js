@@ -144,30 +144,27 @@ export default class CreateNewAudio extends Component {
     render() {
         return (
             /* jshint ignore: start */
-            <Container style={{paddingVertical:55,marginHorizontal:15}}>
+            <Container style={styles.container}>
             
                 <InputGroup borderType='underline'>
-                    <Icon name="md-home" />
-                    <Input  maxLength={20} onChangeText={(audio)=>this.setState({audio:audio})} value={this.state.audio} placeholder={"作品名称"}/>
+                    <Icon style={styles.icon} name="md-home" />
+                    <Input  maxLength={20} style={styles.input} onChangeText={(audio)=>this.setState({audio:audio})} value={this.state.audio} placeholder={"作品名称"} placeholderTextColor={styles.lightGreen}/>
                 </InputGroup>
                 <InputGroup>
-                    <Icon name="md-book" />
-                    <Input onFocus={()=>{Keyboard.dismiss();this._goToDocList();}} value={this.state.doc?this.state.doc.split(".")[0]:""} placeholder={"文本文件"}/>
+                    <Icon style={styles.icon} name="md-book" />
+                    <Input  style={styles.input} onFocus={()=>{Keyboard.dismiss();this._goToDocList();}} value={this.state.doc?this.state.doc.split(".")[0]:""} placeholder={"文本文件"} placeholderTextColor={styles.lightGreen}/>
                 </InputGroup>
                 <InputGroup>
-                    <Icon  name="md-headset" />
-                    <Input onFocus={()=>{Keyboard.dismiss();this._goToMusicList();}} value={this.state.music?this.state.music.split(".")[0]:""} placeholder={"伴奏文件"}/>
+                    <Icon style={styles.icon}  name="md-headset" />
+                    <Input  style={styles.input} onFocus={()=>{Keyboard.dismiss();this._goToMusicList();}} value={this.state.music?this.state.music.split(".")[0]:""} placeholder={"伴奏文件"} placeholderTextColor={styles.lightGreen}/>
                     {(()=>{
                         if(this.state.music){
                             return <Icon onPress={()=>this._musicOnClick()} name={this.state.musicPlaying?"md-pause":"md-play"}/>
                         }
                     })()}
                 </InputGroup>
+                {this.state.docData?(
                     <Card style={{marginTop:20}}>
-                        <CardItem header style={{backgroundColor:"#EFEFF2"}}>
-                            <Icon name="md-document" style={{color:"#007AFF"}}/>
-                            <Text style={{color:"#585858"}}>文本内容</Text>
-                        </CardItem>
                         <Content>
                         <CardItem >
                             <Body>
@@ -178,7 +175,9 @@ export default class CreateNewAudio extends Component {
                         </CardItem>
                         </Content>
                     </Card>
-                <Button block style={{marginHorizontal:50,marginVertical:15}} onPress={()=>this._recordOnClick()}>
+                ):null
+                }
+                <Button rounded block style={styles.recordButton} onPress={()=>this._recordOnClick()}>
                     <Text>{this.state.recording?"完成创作":"开始创作！"}</Text>
                 </Button>
             </Container>
@@ -186,3 +185,22 @@ export default class CreateNewAudio extends Component {
         );
     }
 }
+const styles={
+    container:{
+        marginTop:55,
+        marginBottom:30,
+        marginHorizontal:15
+    },
+    icon:{
+        color:'#FF4081'
+    },
+    input:{
+        color:'#008975'
+    },
+    recordButton:{
+        marginHorizontal:50,
+        marginVertical:15,
+        backgroundColor:'#FF80AB'
+    },
+    lightGreen:'#00BF9A'
+};

@@ -11,6 +11,7 @@ Music.schema = {
     duration:'int',
     music:{type:'Music',optional:true},
     doc:{type:'Doc',optional:true},
-    date:'date'
+    date:'date',
+    likes:'int'
   }
 };

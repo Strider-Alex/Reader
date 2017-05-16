@@ -57,7 +57,7 @@ export default class ShareDoc extends Component {
     render(){
         /*jshint ignore:start*/
         return(
-            <Container style={{top:80}}>
+            <Container>
                 <Content>
                     <Button block style={{marginHorizontal:20}} onPress={()=>this._downloadDoc()}>
                         {(()=>{
