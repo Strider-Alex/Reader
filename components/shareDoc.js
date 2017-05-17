@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Content, Button,Text,Spinner,Toast} from 'native-base';
+import {Container, Content, Button,Text,List,ListItem,Left,Right,Body,Thumbnail,Icon} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
@@ -9,8 +9,19 @@ export default class ShareDoc extends Component {
     constructor(props){
         super(props);
         this.state={
-            downloading:false
+            docList:[]
         };
+    }
+    componentDidMount(){
+        RNFetchBlob
+            .fetch('GET','http://api.strider.site'+'/reader/doc?default=true')
+            .then((res)=>{
+                let docList = res.json().data;
+                this.setState({
+                    docList:docList
+                });
+            })
+            .catch((e)=>console.log(e));
     }
      // download default docs from the API
     _downloadDoc(){
@@ -59,19 +70,39 @@ export default class ShareDoc extends Component {
         return(
             <Container>
                 <Content>
-                    <Button block style={{marginHorizontal:20}} onPress={()=>this._downloadDoc()}>
-                        {(()=>{
-                            if(this.state.downloading){
-                                return <Spinner color='#007AFF' style={{height:5,width:5}} />
-                            }
-                            else{
-                                return <Text>下载推荐文本！</Text>
-                            }
-                        })()}
-                    </Button>
+                    <List dataArray={this.state.docList} renderRow={(doc)=>
+                        <ListItem avatar button >
+                           <Left>
+                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.docImage}/>
+                            </Left>                        
+                            <Body>
+                                <Text style={styles.docTitle}>{doc.title}</Text>
+                                <Text note>{doc.author}</Text>
+                            </Body>
+                            <Right>
+                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+1}</Text>
+                            </Right>
+
+                        </ListItem>
+                    }>
+                    </List>
                 </Content>
             </Container>
         );
         /*jshint ignore:end*/
     }
 }
+
+const styles={
+    docImage:{
+        height:40,
+        width:40
+    },
+    docTitle:{
+        color:'#008975'
+    },
+    likeIcon:{
+        color:'#FF4081',
+        fontSize:20
+    }
+};

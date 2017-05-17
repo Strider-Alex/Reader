@@ -69,31 +69,32 @@ export default class ShareAudio extends Component {
                 });
             });
     }
-    
+    //go to audio page
+    _goToAudio(audio){
+        Actions.audioPage({
+            audio:audio
+        });
+    }
     render(){    
         return(
             /*jshint ignore:start*/
             <Container>
                 <Content>
-                    <List>
-                        {
-                            this.state.audioList.map((audio,i)=>{
-                                return(
-                                    <ListItem avatar button key={i}>
-                                        <Left>
-                                            <Thumbnail source={require('../image/ic_launcher.png')} style={styles.audioImage}/>
-                                        </Left>                        
-                                        <Body>
-                                            <Text style={styles.audioTitle}>{audio.title}</Text>
-                                            <Text note>{audio.author}</Text>
-                                        </Body>
-                                        <Right>
-                                            <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+i}</Text>
-                                        </Right>
-                                    </ListItem>
-                                )
-                            })
-                        }
+                    <List dataArray={this.state.audioList} renderRow={(audio)=>
+                        <ListItem avatar button onPress={()=>this._goToAudio(audio)}>
+                           <Left>
+                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.audioImage}/>
+                            </Left>                        
+                            <Body>
+                                <Text style={styles.audioTitle}>{audio.title}</Text>
+                                <Text note>{audio.author}</Text>
+                            </Body>
+                            <Right>
+                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+1}</Text>
+                            </Right>
+
+                        </ListItem>
+                    }>
                     </List>
                 </Content>
             </Container>
