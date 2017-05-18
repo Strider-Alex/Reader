@@ -19,6 +19,16 @@ import ID from '../models/id';
 let realm = new Realm({
     schema:[Audio,Doc,ID]
 });
+//get id
+let getID=(schemaName)=>{
+    let obj = realm.objectForPrimaryKey('ID',schemaName);
+    if(obj){
+        obj.id++;
+    }else{
+        realm.create('ID',{schema:schemaName,id:0});
+    }
+    return obj?obj.id+1:0;
+};
 
 export default class CreateNewAudio extends Component {
     
@@ -89,32 +99,36 @@ export default class CreateNewAudio extends Component {
                 this.setState({
                     recording:recording
                 });
-                //if recording stop,write json file
+                //if recording stop,write to database
                 if(!recording){
-                    let data = {};
-                    data.doc = this.state.docData;
-                    data.title = this.state.audio;
-                    fs.writeFile(
-                        audioDir+`/json/${this.state.audio}.json`,
-                        JSON.stringify(data),
-                        'utf8'
-                    )
-                    
-                    .then(()=>{
-                        // show toast messages: record succeed!
-                        Toast.show({
-                            text: '作品已添加至工作室',
-                            position: 'bottom',
-                            buttonText: '好'
-                        });
-                    })
-                    .catch((err)=>{
-                        console.log(err);
+                    doc = realm.objects('Doc').filtered(`title=='${this.state.doc.title}'`)['0'];
+                    realm.write(()=>{
+                         let audioResult = realm.create('Audio',{
+                            id:getID('Audio'),
+                            title:  this.state.audio,
+                            author: 'login_user',
+                            size: 100,
+                            duration:100,
+                            music:this.state.music,
+                            doc:doc,
+                            date:new Date(),
+                            collection:false
+                        },true);
+                        console.log(audioResult);
+                    });
+                    Toast.show({
+                        text:'已加入工作室！',
+                        position:'bottom',
+                        buttonText:'好'
                     });
                 }
             });
             //also play/stop music
-            player.musicPlayAndStop(`${this.state.music}`);
+            player.musicPlayAndStop(`${this.state.music}`,(playing)=>{
+                this.setState({
+                    musicPlaying:playing
+                });
+            });
         }
         
     }

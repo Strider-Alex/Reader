@@ -9,6 +9,7 @@ import AudioPage from './audioPage';
 import DocPage from './docPage';
 import MusicPage from './musicPage';
 import SimpleList from './simpleList';
+import SimpleAudioPage from './simpleAudioPage';
 import TabIcon from './tabIcon';
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text } from 'native-base';
 import { Scene, Router, TabBar, Modal, ActionConst } from 'react-native-router-flux';
@@ -33,6 +34,7 @@ export default class AppNavigator extends Component {
                         <Scene key="docPage" component={DocPage} title="文段详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                         <Scene key="musicPage" component={MusicPage} title="伴奏详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                         <Scene key="simpleList" component={SimpleList} title="工作室列表" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
+                        <Scene key="simpleAudioPage" component={SimpleAudioPage} title="草稿详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                     </Scene>
                 </Scene>
             </Router>

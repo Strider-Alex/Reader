@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View } from 'react-native';
-import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col} from 'native-base';
+import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 import MusicPlayer from './musicPlayer';
-
+import { Player,ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 let player = new MusicPlayer();
 
 const Realm = require('realm');
@@ -65,26 +65,39 @@ export default class AudioPage extends Component {
         super(props);
         this.state = {
             // if the music is playing now
-            musicPlaying:false
+            collected:false
         };
     }
-    componentDidMount() {
-        console.log(this.props.audio);
+    componentWillMount() {
+        let obj = realm.objects('Audio').filtered(`remoteID=='${this.props.audio._id}'`);
+        //set collected if it's already in database
+        
+        if(Object.keys(obj).length !== 0){
+            this.setState({
+                collected:true
+            });
+        }
     }
     //add audio to collection
     _addToCollection(){
-        
+        let doc;
+        let docs = realm.objects('Doc').filtered(`title=='${this.props.doc.title}'`);
         realm.write(()=>{
-            let doc = {
-                id:getID('Doc'),
-                title:this.props.audio.doc.title,
-                author:this.props.audio.doc.author,
-                book:this.props.audio.doc.book,
-                length:5,
-                date:new Date(),
-                likes:20,
-                content:this.props.audio.doc.content,
-            };
+            //check if doc already exist
+            if(Object.keys(docs).length === 0){
+                doc = {
+                    id:getID('Doc'),
+                    title:this.props.audio.doc.title,
+                    author:this.props.audio.doc.author,
+                    book:this.props.audio.doc.book,
+                    length:5,
+                    date:new Date(),
+                    likes:20,
+                    content:this.props.audio.doc.content,
+                };
+            }else{
+                doc = docs['0'];
+            }
             let audioResult = realm.create('Audio',{
                 id:getID('Audio'),
                 title:  this.props.audio.title,
@@ -98,10 +111,18 @@ export default class AudioPage extends Component {
                 likes:10,
                 remoteID:this.props.audio._id,
                 path:this.props.audio.path
-            });
+            },true);
             console.log(audioResult);
             console.log(realm.objects('Audio').length);
             console.log(realm.objects('Doc').length);
+        });
+        this.setState({
+            collected:true
+        });
+         Toast.show({
+            text: '收藏成功！',
+            position: 'bottom',
+            buttonText: '好'
         });
     }
     //on click, play or stop music
@@ -133,7 +154,10 @@ export default class AudioPage extends Component {
                             <Grid>
                                 <ColButton iconName="md-heart" text="点赞"/>
                                 <ColButton iconName="md-people" text="评论"/>
+                                {this.state.collected?
+                                <ColButton iconName="md-happy" text="已收藏" onPress={()=>{}}/>:
                                 <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>
+                                }         
                                 <ColButton iconName="md-arrow-dropright-circle" text="播放" onPress={()=>this._playAudio()}/>
                             </Grid>
                         </ListItem>

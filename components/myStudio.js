@@ -31,7 +31,7 @@ export default class MyStudio extends Component {
                     <ListItem button onPress={()=>this._goToList(item)}>
                         <Left>
                            <Thumbnail source={require('../image/ic_launcher.png')} style={styles.audioImage}/>
-                           <Text style={styles.audioTitle}>{`${item}(0)`}</Text>
+                           <Text style={styles.audioTitle}>{`${item}`}</Text>
                         </Left>                             
                         <Right>
                             <Icon style={styles.icon} name="md-arrow-forward"/>

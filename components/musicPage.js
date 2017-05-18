@@ -61,8 +61,7 @@ export default class MusicPage extends Component {
                         </ListItem>
                             
                     </List>
-                    <Button block rounded style={styles.challengeButton}><Icon name="md-download"/><Text>下载</Text></Button>
-                            <Button block rounded style={styles.challengeButton}><Icon name="md-arrow-dropright-circle"/><Text>播放</Text></Button>  
+                    <Button block rounded style={styles.challengeButton}><Icon name="md-arrow-dropright-circle"/><Text>播放</Text></Button>  
                     </Content>
             </Container>
             /* jshint ignore: end */

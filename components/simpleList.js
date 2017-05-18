@@ -39,17 +39,7 @@ export default class simpleList extends Component {
             itemList = realm.objects('Doc');
         }
         else if(this.props.itemType=='本地伴奏'){
-             // get music list from the file system
-            fs.ls(musicDir)
-                .then((files)=>{
-                    this.setState({
-                        itemList:files
-                    });
-                })
-                .catch((err)=>{
-                    // if file doesn't exist, mkdir
-                    fs.mkdir(musicDir);
-                });
+             itemList = ['love.aac','duelist.aac','flower.aac']
         }
         if(itemList){
             this.setState({
@@ -68,7 +58,7 @@ export default class simpleList extends Component {
         }
         else if(this.props.itemType=='我的创作'){
             item._id=item.remoteID;
-            Actions.audioPage({
+            Actions.simpleAudioPage({
                 audio:item
             });
         }
@@ -95,7 +85,7 @@ export default class simpleList extends Component {
                                 <Thumbnail source={require('../image/ic_launcher.png')} style={styles.itemImage}/>
                             </Left>                        
                             <Body>
-                                <Text style={styles.itemTitle}>{item.title}</Text>
+                                <Text style={styles.itemTitle}>{item.title?item.title:item}</Text>
                                 <Text note>{item.author}</Text>
                             </Body>
 
