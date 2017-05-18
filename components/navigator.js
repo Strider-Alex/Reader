@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Navigator, TouchableHighlight, StyleSheet } from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
 import CreateNewAudio from './createNewAudio';
 import MyStudio from './myStudio';
 import DocList from './docList';
@@ -8,15 +7,13 @@ import MusicList from './musicList';
 import Share from './share';
 import AudioPage from './audioPage';
 import DocPage from './docPage';
+import MusicPage from './musicPage';
+import SimpleList from './simpleList';
 import TabIcon from './tabIcon';
-import Collection from './collection';
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text } from 'native-base';
 import { Scene, Router, TabBar, Modal, ActionConst } from 'react-native-router-flux';
 
 export default class AppNavigator extends Component {
-    componentDidMount() {
-        SplashScreen.hide();
-    }
     render() {
         return (
             /* jshint ignore: start */
@@ -33,6 +30,9 @@ export default class AppNavigator extends Component {
                         <Scene key="docList" component={DocList} title="选择文本" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                         <Scene key="musicList" component={MusicList} title="选择伴奏" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                         <Scene key="audioPage" component={AudioPage} title="作品详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
+                        <Scene key="docPage" component={DocPage} title="文段详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
+                        <Scene key="musicPage" component={MusicPage} title="伴奏详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
+                        <Scene key="simpleList" component={SimpleList} title="工作室列表" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                     </Scene>
                 </Scene>
             </Router>

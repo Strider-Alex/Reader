@@ -16,7 +16,7 @@ export default class ShareAudio extends Component {
         };
     }
     //did mount, get audio data from api
-    componentDidMount(){
+    componentWillMount(){
          RNFetchBlob
             .fetch('GET',apiUrl+'/reader/audio')
             .then((res)=>{

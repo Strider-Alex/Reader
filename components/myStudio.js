@@ -15,13 +15,20 @@ export default class MyStudio extends Component {
         
     }
     
+    _goToList(item){
+        
+        Actions.simpleList({
+            itemType:item
+        });
+        console.log('hello');
+    }
     render() {
         let items=['我的创作','本地文本','本地伴奏','收藏作品'];
         return (
             /* jshint ignore: start */
             <Container style={styles.container}>
                 <List dataArray={items} renderRow={(item)=>
-                    <ListItem>
+                    <ListItem button onPress={()=>this._goToList(item)}>
                         <Left>
                            <Thumbnail source={require('../image/ic_launcher.png')} style={styles.audioImage}/>
                            <Text style={styles.audioTitle}>{`${item}(0)`}</Text>

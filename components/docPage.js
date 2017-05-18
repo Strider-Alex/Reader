@@ -40,9 +40,6 @@ export default class DocPage extends Component {
     
     constructor(props){
         super(props);
-        this.state = {
-
-        };
     }
     componentDidMount() {
         console.log(this.props.doc);
@@ -56,7 +53,7 @@ export default class DocPage extends Component {
                     <List>
                         <ListItem style={styles.header}>
                             <Left>
-                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.audioImage}/>
+                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.docImage}/>
                             </Left>                        
                             <Body>
                                 <Text style={styles.docTitle}>{this.props.doc.title}</Text>
@@ -69,6 +66,7 @@ export default class DocPage extends Component {
                                 <ColButton iconName="md-heart" text="点赞"/>
                                 <ColButton iconName="md-people" text="评论"/>
                                 <ColButton iconName="md-albums" text="收藏"/>
+                                <ColButton iconName="md-mic" text="朗诵"/>
                             </Grid>
                         </ListItem>
                     </List>
@@ -81,7 +79,6 @@ export default class DocPage extends Component {
                         <ListItem style={styles.docContainer}>
                             <Body>
                             <Text note>{this.props.doc.content}</Text>
-                            <Button block rounded style={styles.challengeButton}><Text>挑战本文段</Text></Button>  
                             </Body>
                             
                         </ListItem>          

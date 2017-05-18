@@ -29,9 +29,10 @@ export default class Share extends Component{
                     <Tab heading={ <TabHeading style={styles.tabs}><Text>文本</Text></TabHeading>}>
                         <ShareDoc />
                     </Tab>
-                    <Tab heading={ <TabHeading style={styles.tabs}><Text>伴奏</Text></TabHeading>}>
+
+                    {/*<Tab heading={ <TabHeading style={styles.tabs}><Text>伴奏</Text></TabHeading>}>
                         <ShareMusic />
-                    </Tab>
+                    </Tab>*/}
                 </Tabs>
                 
                 <NewFab/>

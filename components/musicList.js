@@ -6,7 +6,7 @@ import {Actions} from 'react-native-router-flux';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const Sound = require('react-native-sound');
-const musicDir = dirs.DocumentDir+'/music';
+const musicDir = dirs.MainBundleDir+'/images';
 const apiUrl = 'http://api.strider.site';
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class MusicList extends Component {
@@ -14,14 +14,14 @@ export default class MusicList extends Component {
     constructor(props){
         super(props);
         this.state = {
-            musicList:[]
+             musicList:['love.aac','duelist.aac','flower.aac']
         };
         
     }
 
-    componentDidMount() {
+    componentWillMount() {
         // get music list from the file system
-        fs.ls(musicDir)
+        /*fs.ls(musicDir)
             .then((files)=>{
                 this.setState({
                     musicList:files
@@ -30,7 +30,8 @@ export default class MusicList extends Component {
             .catch((err)=>{
                 // if file doesn't exist, mkdir
                 fs.mkdir(musicDir);
-            });
+            });*/
+
     }
     _onMusicSelected(music){
         if(music){

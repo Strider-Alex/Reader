@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Container, Content,Text, Button,Icon,Right,Left,List,ListItem,Thumbnail,Body} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ClickableListView from './clickableListView';
+import {Actions} from 'react-native-router-flux';
 const dirs = RNFetchBlob.fs.dirs;
 const apiUrl = 'http://api.strider.site';
 const musicDir = dirs.DocumentDir+'/music';
@@ -13,7 +14,7 @@ export default class ShareMusic extends Component {
             downloading:-1
         };
     }
-    componentDidMount(){
+    componentWillMount(){
         RNFetchBlob
             .fetch('GET',apiUrl+'/reader/music')
             .then((res)=>{
@@ -57,30 +58,26 @@ export default class ShareMusic extends Component {
                 console.log(err);
             });
     }
+    _goToMusic(music){
+        Actions.musicPage({
+            music:music
+        });
+    }
     render(){
         /*jshint ignore:start*/
         return(
             <Container>
                 <Content>
-                    <List>
-                        {
-                            this.state.musicList.map((music,i)=>{
-                                return(
-                                    <ListItem avatar button key={i}>
-                                        <Left>
-                                            <Thumbnail source={require('../image/ic_launcher.png')} style={styles.musicImage}/>
-                                        </Left>                        
-                                        <Body>
-                                            <Text style={styles.musicTitle}>{music}</Text>
-                                            <Text note>{music.author}</Text>
-                                        </Body>
-                                        <Right>
-                                            <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+i}</Text>
-                                        </Right>
-                                    </ListItem>
-                                )
-                            })
-                        }
+                    <List dataArray={this.state.musicList} renderRow={(music)=>
+                        <ListItem avatar button onPress={()=>this._goToMusic(music)}>
+                            <Left>
+                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.musicImage}/>
+                            </Left>                        
+                            <Body>
+                                <Text style={styles.musicTitle}>{music}</Text>
+                            </Body>
+                        </ListItem>
+                    }>
                     </List>
                 </Content>
             </Container>

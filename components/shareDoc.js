@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Container, Content, Button,Text,List,ListItem,Left,Right,Body,Thumbnail,Icon} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
+import {Actions} from 'react-native-router-flux';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const apiUrl = 'http://api.strider.site';
@@ -12,7 +13,7 @@ export default class ShareDoc extends Component {
             docList:[]
         };
     }
-    componentDidMount(){
+    componentWillMount(){
         RNFetchBlob
             .fetch('GET','http://api.strider.site'+'/reader/doc?default=true')
             .then((res)=>{
@@ -65,13 +66,18 @@ export default class ShareDoc extends Component {
                 console.log(err);
             });
     }
+    _goToDoc(doc){
+        Actions.docPage({
+            doc:doc
+        });
+    }
     render(){
         /*jshint ignore:start*/
         return(
             <Container>
                 <Content>
                     <List dataArray={this.state.docList} renderRow={(doc)=>
-                        <ListItem avatar button >
+                        <ListItem avatar button onPress={()=>this._goToDoc(doc)}>
                            <Left>
                                 <Thumbnail source={require('../image/ic_launcher.png')} style={styles.docImage}/>
                             </Left>                        

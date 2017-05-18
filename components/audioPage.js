@@ -7,11 +7,30 @@ import MusicPlayer from './musicPlayer';
 
 let player = new MusicPlayer();
 
+const Realm = require('realm');
+import Audio from '../models/audio';
+import Doc from '../models/doc';
+import ID from '../models/id';
+let realm = new Realm({
+    schema:[Audio,Doc,ID]
+});
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const docDir = dirs.DocumentDir+'/docs';
 const musicDir = dirs.DocumentDir+'/music';
 const audioDir = dirs.DocumentDir+'/audio';
+const apiUrl = 'http://api.strider.site/reader';
+
+//get id
+let getID=(schemaName)=>{
+    let obj = realm.objectForPrimaryKey('ID',schemaName);
+    if(obj){
+        obj.id++;
+    }else{
+        realm.create('ID',{schema:schemaName,id:0});
+    }
+    return obj?obj.id+1:0;
+};
 
 // component ColButton
 class ColButton extends Component{
@@ -19,7 +38,7 @@ class ColButton extends Component{
         return(
             /* jshint ignore: start */
             <Col style={styles.col}>
-                <Button transparent style={styles.audioButton}>
+                <Button transparent style={styles.audioButton} onPress={()=>this.props.onPress()}> 
                     <Icon name={this.props.iconName} style={styles.icon}/><Text style={styles.icon}>{this.props.text}</Text>
                 </Button>
             </Col>
@@ -46,16 +65,48 @@ export default class AudioPage extends Component {
         super(props);
         this.state = {
             // if the music is playing now
-            musicPlaying:false,
-            fixed:false
+            musicPlaying:false
         };
     }
     componentDidMount() {
         console.log(this.props.audio);
     }
+    //add audio to collection
+    _addToCollection(){
+        
+        realm.write(()=>{
+            let doc = {
+                id:getID('Doc'),
+                title:this.props.audio.doc.title,
+                author:this.props.audio.doc.author,
+                book:this.props.audio.doc.book,
+                length:5,
+                date:new Date(),
+                likes:20,
+                content:this.props.audio.doc.content,
+            };
+            let audioResult = realm.create('Audio',{
+                id:getID('Audio'),
+                title:  this.props.audio.title,
+                author: this.props.audio.author,
+                size: 12,
+                duration:55,
+                music:this.props.audio.music,
+                doc:doc,
+                date:new Date(),
+                collection:true,
+                likes:10,
+                remoteID:this.props.audio._id,
+                path:this.props.audio.path
+            });
+            console.log(audioResult);
+            console.log(realm.objects('Audio').length);
+            console.log(realm.objects('Doc').length);
+        });
+    }
     //on click, play or stop music
-    _musicOnClick(){
-        player.musicPlayAndStop(`${musicDir}/${this.state.music}`,(playing)=>{
+    _playAudio(){
+        player.musicPlayAndStop(`${apiUrl}/audio/download?_id=${this.props.audio._id}`,(playing)=>{
             this.setState({
                 musicPlaying:playing
             });
@@ -82,8 +133,8 @@ export default class AudioPage extends Component {
                             <Grid>
                                 <ColButton iconName="md-heart" text="点赞"/>
                                 <ColButton iconName="md-people" text="评论"/>
-                                <ColButton iconName="md-albums" text="收藏"/>
-                                <ColButton iconName="md-arrow-dropright-circle" text="播放"/>
+                                <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>
+                                <ColButton iconName="md-arrow-dropright-circle" text="播放" onPress={()=>this._playAudio()}/>
                             </Grid>
                         </ListItem>
                     </List>

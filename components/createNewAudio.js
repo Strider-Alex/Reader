@@ -10,18 +10,24 @@ let recorder = new AudioRecorder();
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
+const musicDir = '';
 const audioDir = dirs.DocumentDir+'/audio';
+const Realm = require('realm');
+import Audio from '../models/audio';
+import Doc from '../models/doc';
+import ID from '../models/id';
+let realm = new Realm({
+    schema:[Audio,Doc,ID]
+});
 
 export default class CreateNewAudio extends Component {
     
     constructor(props){
         super(props);
         this.state = {
-            audio:undefined,
-            doc: undefined,
-            music: undefined,
-            docData: undefined,
+            audio:null,
+            doc: null,
+            music: null,
             hasPermission: undefined,
             // if the music is playing now
             musicPlaying:false,
@@ -29,14 +35,13 @@ export default class CreateNewAudio extends Component {
             recording:false
         };
     }
-    componentDidMount() {
+    componentWillMount() {
         //listen to doc change event
         //reload doc content
         DeviceEventEmitter.addListener('docChanged',(doc)=>{
             this.setState({
                 doc:doc
             });
-            this._reloadDocContent(doc);
         });
         //listen to music change event
         DeviceEventEmitter.addListener('musicChanged',(music)=>{
@@ -55,25 +60,12 @@ export default class CreateNewAudio extends Component {
             // if audio path doesn't exist, mkdir
             fs.mkdir(audioDir);
         }
-        // get text content
-        this._reloadDocContent(this.state.doc);
+
     }
     componentWillUnMount(){
          this.subscription.remove();
     }
-    _reloadDocContent(doc){
-        if(doc){
-            fs.readFile(`${docDir}/${doc}`,'uft8')
-                .then((data)=>{
-                    this.setState({
-                        docData: JSON.parse(data)
-                    });
-                })
-                .catch((err)=>{
-                    console.log("the error:"+err);
-                });
-        }
-    }
+ 
      _checkPermission() {
         if (Platform.OS !== 'android') {
             return Promise.resolve(true);
@@ -107,6 +99,7 @@ export default class CreateNewAudio extends Component {
                         JSON.stringify(data),
                         'utf8'
                     )
+                    
                     .then(()=>{
                         // show toast messages: record succeed!
                         Toast.show({
@@ -121,13 +114,13 @@ export default class CreateNewAudio extends Component {
                 }
             });
             //also play/stop music
-            player.musicPlayAndStop(`${musicDir}/${this.state.music}`);
+            player.musicPlayAndStop(`${this.state.music}`);
         }
         
     }
     //on click, play or stop music
     _musicOnClick(){
-        player.musicPlayAndStop(`${musicDir}/${this.state.music}`,(playing)=>{
+        player.musicPlayAndStop(`${this.state.music}`,(playing)=>{
             this.setState({
                 musicPlaying:playing
             });
@@ -152,7 +145,7 @@ export default class CreateNewAudio extends Component {
                 </InputGroup>
                 <InputGroup>
                     <Icon style={styles.icon} name="md-book" />
-                    <Input  style={styles.input} onFocus={()=>{Keyboard.dismiss();this._goToDocList();}} value={this.state.doc?this.state.doc.split(".")[0]:""} placeholder={"文本文件"} placeholderTextColor={styles.lightGreen}/>
+                    <Input  style={styles.input} onFocus={()=>{Keyboard.dismiss();this._goToDocList();}} value={this.state.doc?this.state.doc.title.split(".")[0]:""} placeholder={"文本文件"} placeholderTextColor={styles.lightGreen}/>
                 </InputGroup>
                 <InputGroup>
                     <Icon style={styles.icon}  name="md-headset" />
@@ -163,18 +156,13 @@ export default class CreateNewAudio extends Component {
                         }
                     })()}
                 </InputGroup>
-                {this.state.docData?(
-                    <Card style={{marginTop:20}}>
-                        <Content>
-                        <CardItem >
-                            <Body>
+                {this.state.doc?(
+                        <Content style={{marginTop:20}}>
+
                                 <Text style={{color:"#585858"}}>
-                                    {this.state.docData?this.state.docData.content:""}
+                                    {this.state.doc.content}
                                 </Text>
-                            </Body>
-                        </CardItem>
                         </Content>
-                    </Card>
                 ):null
                 }
                 <Button rounded block style={styles.recordButton} onPress={()=>this._recordOnClick()}>

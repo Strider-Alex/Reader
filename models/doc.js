@@ -1,6 +1,6 @@
 //audio schema
 export default class Doc {}
-Music.schema = {
+Doc.schema = {
   name: 'Doc',
   primaryKey:'id',
   properties: {
@@ -10,6 +10,7 @@ Music.schema = {
     book:'string',
     length: 'int',
     date:'date',
-    likes:'int'
+    likes:'int',
+    content:{type:'string',optional:true}
   }
 };
