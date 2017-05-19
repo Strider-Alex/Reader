@@ -90,7 +90,7 @@ export default class ShareDoc extends Component {
                                 <Text note>{doc.author}</Text>
                             </Body>
                             <Right>
-                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+doc.likes}</Text>
+                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+1}</Text>
                             </Right>
 
                         </ListItem>

@@ -90,7 +90,7 @@ export default class ShareAudio extends Component {
                                 <Text note>{audio.author}</Text>
                             </Body>
                             <Right>
-                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+audio.likes}</Text>
+                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+1}</Text>
                             </Right>
 
                         </ListItem>

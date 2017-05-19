@@ -65,7 +65,9 @@ export default class AudioPage extends Component {
         super(props);
         this.state = {
             // if the music is playing now
-            collected:false
+            collected:false,
+            //if music is playing
+            musicPlaying:false,
         };
     }
     componentWillMount() {
@@ -163,8 +165,12 @@ export default class AudioPage extends Component {
                                 {this.state.collected?
                                 <ColButton iconName="md-happy" text="已收藏" onPress={()=>{}}/>:
                                 <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>
-                                }         
+                                }
+                                {this.state.musicPlaying?
+                                <ColButton iconName="md-arrow-dropright-circle" text="播放中" onPress={()=>this._playAudio()}/>:
                                 <ColButton iconName="md-arrow-dropright-circle" text="播放" onPress={()=>this._playAudio()}/>
+                                }            
+                                
                             </Grid>
                         </ListItem>
                     </List>

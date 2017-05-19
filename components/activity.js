@@ -6,7 +6,8 @@ import {Actions} from 'react-native-router-flux';
 import MusicPlayer from './musicPlayer';
 import { Player,ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 let player = new MusicPlayer();
-
+let Dimensions = require('Dimensions');
+let {width,height} = Dimensions.get('window');
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -43,7 +44,7 @@ export default class Activity extends Component {
             <Container style={styles.container}>
                 <Content>
                     <Body>
-                    <Card style={{width:380}} >
+                    <Card>
                         <CardItem>
                             <Left>
                                 <Thumbnail source={require('../image/ic_launcher.png')}/>
@@ -54,7 +55,7 @@ export default class Activity extends Component {
                             </Left>
                           </CardItem>
                           <CardItem cardBody>
-                              <Image style={{width:380}} source={require('../image/sky.jpg')}/>
+                              <Image style={{width:width*0.9}} source={require('../image/sky.jpg')}/>
                           </CardItem>
                           <CardItem>
                                   <Text note >只为更好的颂客！</Text>
