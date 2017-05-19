@@ -36,7 +36,7 @@ class LoginPage extends Component{
                 });
             }
             else{
-                AsyncStorage.setItem('user','login_user',(err)=>{
+                AsyncStorage.setItem('user',data.account,(err)=>{
                     if(err){
                         console.log(err);
                     }else{

@@ -4,7 +4,6 @@ import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thu
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 import MusicPlayer from './musicPlayer';
-import { Player,ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 let player = new MusicPlayer();
 let Dimensions = require('Dimensions');
 let {width,height} = Dimensions.get('window');

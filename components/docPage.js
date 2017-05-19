@@ -87,9 +87,9 @@ export default class DocPage extends Component {
                     title:this.props.doc.title,
                     author:this.props.doc.author,
                     book:this.props.doc.book,
-                    length:5,
-                    date:new Date(),
-                    likes:20,
+                    length:this.props.length,
+                    date:this.props.date,
+                    liked:false,
                     content:this.props.doc.content,
                 },true);
             }

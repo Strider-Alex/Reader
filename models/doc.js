@@ -10,7 +10,7 @@ Doc.schema = {
     book:'string',
     length: 'int',
     date:'date',
-    likes:'int',
+    liked:'bool',
     content:{type:'string',optional:true}
   }
 };

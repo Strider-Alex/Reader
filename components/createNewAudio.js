@@ -11,6 +11,8 @@ const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const docDir = dirs.DocumentDir+'/docs';
 const musicDir = '';
+import { AudioUtils} from 'react-native-audio';
+
 const audioDir = dirs.DocumentDir+'/audio';
 const Realm = require('realm');
 import Audio from '../models/audio';
@@ -66,7 +68,7 @@ export default class CreateNewAudio extends Component {
         });
         // get permission of microphone
         this._checkPermission().then((hasPermission) => {
-                this.setState({ hasPermission });
+                this.setState({ hasPermission:hasPermission });
 
                 if (!hasPermission) return;
         });
@@ -99,7 +101,7 @@ export default class CreateNewAudio extends Component {
     }
     //on click, start or stop record
     _recordOnClick(){
-        if(this.state.audio&&this.state.music&&this.state.doc){
+        if(this.state.audio&&this.state.music){
             recorder.recordStartAndStop(`${audioDir}/${this.state.audio}.aac`,this.state.recording,(recording)=>{
                 this.setState({
                     recording:recording
@@ -118,6 +120,7 @@ export default class CreateNewAudio extends Component {
                                 music:this.state.music,
                                 doc:doc,
                                 date:new Date(),
+                                liked:true,
                                 collection:false
                             },true);
                             console.log(audioResult);

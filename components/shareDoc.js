@@ -4,7 +4,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const apiUrl = 'http://api.strider.site';
+const apiUrl = 'http://120.77.250.109';
 const docDir = dirs.DocumentDir+'/docs';
 export default class ShareDoc extends Component {
     constructor(props){
@@ -15,13 +15,12 @@ export default class ShareDoc extends Component {
     }
     componentWillMount(){
         RNFetchBlob
-            .fetch('GET','http://api.strider.site'+'/reader/doc?default=true',{
+            .fetch('GET',apiUrl+'/text',{
                 'Accept-Encoding': 'gzip, deflate, sdch',
-'Accept-Language': 'zh-CN,zh;q=0.8'
-
+                'Accept-Language': 'zh-CN,zh;q=0.8'
             })
             .then((res)=>{
-                let docList = res.json().data;
+                let docList = res.json();
                 this.setState({
                     docList:docList
                 });
@@ -35,7 +34,7 @@ export default class ShareDoc extends Component {
             downloading:true
         });
         RNFetchBlob
-            .fetch('GET', apiUrl+'/reader/doc?default=true')
+            .fetch('GET', apiUrl+'/text')
             .then((res)=>{
                 let data = res.json().data;
                 // new state object
@@ -90,7 +89,7 @@ export default class ShareDoc extends Component {
                                 <Text note>{doc.author}</Text>
                             </Body>
                             <Right>
-                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+1}</Text>
+                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+doc.like}</Text>
                             </Right>
 
                         </ListItem>

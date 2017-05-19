@@ -5,7 +5,6 @@ import {InputGroup, Input, Textarea,Button, Container, Content,Text, Icon, Body,
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 import MusicPlayer from './musicPlayer';
-import { Player,ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 let player = new MusicPlayer();
 
 const Realm = require('realm');
@@ -20,7 +19,7 @@ const dirs = fs.dirs;
 const docDir = dirs.DocumentDir+'/docs';
 const musicDir = dirs.DocumentDir+'/music';
 const audioDir = dirs.DocumentDir+'/audio';
-const apiUrl = 'http://api.strider.site/reader';
+const apiUrl = 'http://120.77.250.109';
 class Pink extends Component{
     render(){
         return(
@@ -63,7 +62,7 @@ export default class SimpleAudioPage extends Component {
         this.setState({
             uploading:true
         });
-        RNFetchBlob.fetch('POST', `${apiUrl}/audio/upload`, {
+        RNFetchBlob.fetch('POST', `${apiUrl}/upload/audio`, {
             'Content-Type' : 'multipart/form-data',
         }, [
             { name : 'audio', filename : `${audio.title}.aac`, data: RNFetchBlob.wrap(`${audioDir}/${audio.title}.aac`)},
