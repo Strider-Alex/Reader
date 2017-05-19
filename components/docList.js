@@ -8,6 +8,13 @@ const dirs = fs.dirs;
 const apiUrl = 'http://api.strider.site';
 const docDir = dirs.DocumentDir+'/docs';
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+const Realm = require('realm');
+import Audio from '../models/audio';
+import Doc from '../models/doc';
+import ID from '../models/id';
+let realm = new Realm({
+    schema:[Audio,Doc,ID]
+});
 export default class DocList extends Component {
 
     constructor(props){
@@ -20,18 +27,10 @@ export default class DocList extends Component {
         
     }
 
-    componentDidMount() {
-            // get file directory
-        fs.ls(docDir)
-            .then((files)=>{
-                this.setState({
-                    docList:files
-                });
-            })
-            .catch((err)=>{
-                // if file doesn't exist, mkdir
-                fs.mkdir(docDir);
-            })
+    componentWillMount() {
+        this.setState({
+            docList:realm.objects('Doc')
+        });
     }
     _onDocSelected(doc){
         if(doc){
@@ -52,11 +51,11 @@ export default class DocList extends Component {
                         dataSource={ds.cloneWithRows(this.state.docList)}
                         renderRow={(rowData) => (
                             <Button block transparent={true} onPress={()=>this._onDocSelected(rowData)}>
-                                <Text>{rowData.split(".")[0]}</Text>
+                                <Text>{rowData.title.split(".")[0]}</Text>
                             </Button>)}
                         enableEmptySections={true}
                     />
-                    :<Container><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有文本，立刻去“分享”下载吧~</Text></Container>
+                    :<Container><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有文本，立刻去“发现颂客”下载吧~</Text></Container>
                     }
                 </Content>
             </Container>

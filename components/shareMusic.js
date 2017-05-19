@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {Container, Content, Card, CardItem, Text, Button,Icon,Right,Toast} from 'native-base';
+import {Container, Content,Text, Button,Icon,Right,Left,List,ListItem,Thumbnail,Body} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ClickableListView from './clickableListView';
+import {Actions} from 'react-native-router-flux';
 const dirs = RNFetchBlob.fs.dirs;
 const apiUrl = 'http://api.strider.site';
 const musicDir = dirs.DocumentDir+'/music';
@@ -13,7 +14,7 @@ export default class ShareMusic extends Component {
             downloading:-1
         };
     }
-    componentDidMount(){
+    componentWillMount(){
         RNFetchBlob
             .fetch('GET',apiUrl+'/reader/music')
             .then((res)=>{
@@ -57,15 +58,44 @@ export default class ShareMusic extends Component {
                 console.log(err);
             });
     }
+    _goToMusic(music){
+        Actions.musicPage({
+            music:music
+        });
+    }
     render(){
         /*jshint ignore:start*/
         return(
-            <Container style={{top:80}}>
+            <Container>
                 <Content>
-                    <ClickableListView data={this.state.musicList} iconName="md-download" active={this.state.downloading} activeIconName="spinner" click={(music,i)=>this._downloadMusic(music,i)}/>
+                    <List dataArray={this.state.musicList} renderRow={(music)=>
+                        <ListItem avatar button onPress={()=>this._goToMusic(music)}>
+                            <Left>
+                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.musicImage}/>
+                            </Left>                        
+                            <Body>
+                                <Text style={styles.musicTitle}>{music}</Text>
+                            </Body>
+                        </ListItem>
+                    }>
+                    </List>
                 </Content>
             </Container>
         );
         /*jshint ignore:end*/
     }
 }
+
+const styles={
+    musicImage:{
+        height:40,
+        width:40
+    },
+    musicTitle:{
+        color:'#008975'
+    },
+    likeIcon:{
+        color:'#FF4081',
+        fontSize:20
+    }
+};

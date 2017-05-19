@@ -9,6 +9,7 @@ Music.schema = {
     author: 'string',
     size: 'int',
     duration:'int',
-    date:'date'
+    date:'date',
+    likes:'int'
   }
 };

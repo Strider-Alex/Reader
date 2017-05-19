@@ -27,7 +27,9 @@ export default class MusicPlayer{
             }
         }
         else{ //load song if it's not loaded
-            musicObj = new Sound(path, '', (error) => {
+        console.log(Sound.MAIN_BUNDLE);
+        console.log(path);
+            musicObj = new Sound(path, '',(error) => {
                 if (error) {
                     console.log('failed to load the sound', error);
                     return;

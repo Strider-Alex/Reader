@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Body,Container, Content, Card, CardItem, Text, Textarea, Icon, Input, InputGroup,Spinner,Toast } from 'native-base';
+import {Button, Body,Container, Content, Text, Icon, Toast,List,ListItem,Left,Right,Thumbnail,Header,Item,Input } from 'native-base';
 import AudioDownloadView from './audioDownloadView';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
@@ -16,7 +16,7 @@ export default class ShareAudio extends Component {
         };
     }
     //did mount, get audio data from api
-    componentDidMount(){
+    componentWillMount(){
          RNFetchBlob
             .fetch('GET',apiUrl+'/reader/audio')
             .then((res)=>{
@@ -69,16 +69,50 @@ export default class ShareAudio extends Component {
                 });
             });
     }
-    
+    //go to audio page
+    _goToAudio(audio){
+        Actions.audioPage({
+            audio:audio
+        });
+    }
     render(){    
         return(
             /*jshint ignore:start*/
-            <Container style={{marginVertical:60}}>
-                <AudioDownloadView data={this.state.audioList} downloading={this.state.downloading}
-                    downloadClick={(file,i)=>this._onDownloadClick(file,i)}
-                 />
+            <Container>
+                <Content>
+                    <List dataArray={this.state.audioList} renderRow={(audio)=>
+                        <ListItem avatar button onPress={()=>this._goToAudio(audio)}>
+                           <Left>
+                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.audioImage}/>
+                            </Left>                        
+                            <Body>
+                                <Text style={styles.audioTitle}>{audio.title}</Text>
+                                <Text note>{audio.author}</Text>
+                            </Body>
+                            <Right>
+                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+audio.likes}</Text>
+                            </Right>
+
+                        </ListItem>
+                    }>
+                    </List>
+                </Content>
             </Container>
             /*jshint ignore:end*/
         );     
     }
 }
+
+const styles={
+    audioImage:{
+        height:40,
+        width:40
+    },
+    audioTitle:{
+        color:'#008975'
+    },
+    likeIcon:{
+        color:'#FF4081',
+        fontSize:20
+    }
+};
