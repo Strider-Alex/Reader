@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View } from 'react-native';
-import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col} from 'native-base';
+import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
+import {Actions} from 'react-native-router-flux';
+
+const Realm = require('realm');
+import Audio from '../models/audio';
+import Doc from '../models/doc';
+import ID from '../models/id';
+let realm = new Realm({
+    schema:[Audio,Doc,ID]
+});
 
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
@@ -9,13 +18,24 @@ const docDir = dirs.DocumentDir+'/docs';
 const musicDir = dirs.DocumentDir+'/music';
 const audioDir = dirs.DocumentDir+'/audio';
 
+//get id
+let getID=(schemaName)=>{
+    let obj = realm.objectForPrimaryKey('ID',schemaName);
+    if(obj){
+        obj.id++;
+    }else{
+        realm.create('ID',{schema:schemaName,id:0});
+    }
+    return obj?obj.id+1:0;
+};
+
 // component ColButton
 class ColButton extends Component{
     render(){
         return(
             /* jshint ignore: start */
             <Col style={styles.col}>
-                <Button transparent style={styles.audioButton}>
+                <Button transparent style={styles.audioButton} onPress={()=>this.props.onPress()}>
                     <Icon name={this.props.iconName} style={styles.icon}/><Text style={styles.icon}>{this.props.text}</Text>
                 </Button>
             </Col>
@@ -40,11 +60,57 @@ export default class DocPage extends Component {
     
     constructor(props){
         super(props);
+        this.state={
+            collected:false
+        };
     }
-    componentDidMount() {
-        console.log(this.props.doc);
+    componentWillMount() {
+        console.log(this.props.doc.title)
+        let obj = realm.objects('Doc').filtered(`title=='${this.props.doc.title}'`);
+        //set collected if it's already in database
+        if(Object.keys(obj).length !== 0){
+            this.setState({
+                collected:true
+            });
+        }
+        console.log(obj);
     }
-    
+
+    //add doc to collection
+    _addToCollection(){
+        let docs = realm.objects('Doc').filtered(`title=='${this.props.doc.title}'`);
+        realm.write(()=>{
+            //check if doc already exist
+            if(Object.keys(docs).length === 0){
+                realm.create('Doc',{
+                    id:getID('Doc'),
+                    title:this.props.doc.title,
+                    author:this.props.doc.author,
+                    book:this.props.doc.book,
+                    length:5,
+                    date:new Date(),
+                    likes:20,
+                    content:this.props.doc.content,
+                },true);
+            }
+        });
+        this.setState({
+            collected:true
+        });
+        Toast.show({
+            text: '收藏成功！',
+            position: 'bottom',
+            buttonText: '好'
+        });
+    }
+    //read this doc
+    _startReading(){
+        // go to doc
+        Actions.createNew({
+            doc:this.props.doc
+        });
+        
+    }
     render() {
         return (
             /* jshint ignore: start */
@@ -64,17 +130,16 @@ export default class DocPage extends Component {
                         <ListItem style={styles.commomItem}>
                             <Grid>
                                 <ColButton iconName="md-heart" text="点赞"/>
-                                <ColButton iconName="md-people" text="评论"/>
-                                <ColButton iconName="md-albums" text="收藏"/>
-                                <ColButton iconName="md-mic" text="朗诵"/>
+                                <ColButton iconName="md-chatbubbles" text="评论"/>
+                                {this.state.collected?
+                                <ColButton iconName="md-happy" text="已收藏" onPress={()=>{}}/>:
+                                <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>
+                                }
+                                <ColButton iconName="md-mic" text="朗诵" onPress={()=>this._startReading()}/>
                             </Grid>
                         </ListItem>
                     </List>
                     <List>
-                        <ListItem itemDivider><Text>作者留言</Text></ListItem>
-                        <ListItem style={styles.comment}>
-                            <Text note>This APP is so cool! I love Songke!</Text>
-                        </ListItem>
                         <ListItem itemDivider><Text>文段内容</Text></ListItem> 
                         <ListItem style={styles.docContainer}>
                             <Body>

@@ -46,6 +46,11 @@ export default class CreateNewAudio extends Component {
         };
     }
     componentWillMount() {
+        if(this.props.doc){
+            this.setState({
+                doc:this.props.doc
+            });
+        }
         //listen to doc change event
         //reload doc content
         DeviceEventEmitter.addListener('docChanged',(doc)=>{

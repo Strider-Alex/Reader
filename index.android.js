@@ -12,12 +12,6 @@ import SplashScreen from 'react-native-splash-screen';
 import AppNavigator from "./components/navigator";
 
 export default class AwesomeProject extends Component {
-  constructor(props){
-    super(props);
-    this.state={
-      loginToken:null
-    };
-  }
   componentDidMount() {
         SplashScreen.hide();
   }

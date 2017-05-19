@@ -88,7 +88,8 @@ export default class MyStudio extends Component {
             uploading:true
         });
         RNFetchBlob.fetch('POST', `${apiUrl}/reader/audio/upload`, {
-            'Content-Type' : 'multipart/form-data',
+            'Content-Type' : 'multipart/form-data'
+
         }, [
             { name : 'audio', filename : `${audioInfo.title}.aac`, data: RNFetchBlob.wrap(`${audioDir}/${audioInfo.title}.aac`)},
             { name : 'data', data : JSON.stringify(audioInfo)}

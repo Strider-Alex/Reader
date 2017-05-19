@@ -10,7 +10,9 @@ import DocPage from './docPage';
 import MusicPage from './musicPage';
 import SimpleList from './simpleList';
 import SimpleAudioPage from './simpleAudioPage';
+import Activity from './activity';
 import TabIcon from './tabIcon';
+import userCenter from './userCenter';
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text } from 'native-base';
 import { Scene, Router, TabBar, Modal, ActionConst } from 'react-native-router-flux';
 
@@ -24,8 +26,8 @@ export default class AppNavigator extends Component {
                         <Scene key="main" tabs={true} initial={true} tabBarStyle={styles.tabBar}>
                             <Scene key="share" component={Share} title="发现颂客" icon={TabIcon} initial={true} iconName="md-compass" hideNavBar={true}/>
                             <Scene key="myStudio" component={MyStudio} title="工作室" icon={TabIcon} iconName="md-flask" navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}/>
-                            <Scene key="activity" component={MyStudio} title="颂客活动" icon={TabIcon} iconName="md-cafe" navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}/>
-                            <Scene key="userCenter" component={MyStudio} title="用户中心" icon={TabIcon} iconName="md-person" navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}/>
+                            <Scene key="activity" component={Activity} title="颂客活动" icon={TabIcon} iconName="md-cafe" navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}/>
+                            <Scene key="userCenter" component={userCenter} title="用户中心" icon={TabIcon} iconName="md-person" navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}/>
                         </Scene>
                         <Scene key="createNew" component={CreateNewAudio} title="新的作品" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                         <Scene key="docList" component={DocList} title="选择文本" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>

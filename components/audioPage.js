@@ -81,7 +81,7 @@ export default class AudioPage extends Component {
     //add audio to collection
     _addToCollection(){
         let doc;
-        let docs = realm.objects('Doc').filtered(`title=='${this.props.doc.title}'`);
+        let docs = realm.objects('Doc').filtered(`title=='${this.props.audio.doc.title}'`);
         realm.write(()=>{
             //check if doc already exist
             if(Object.keys(docs).length === 0){
@@ -153,7 +153,7 @@ export default class AudioPage extends Component {
                         <ListItem style={styles.commomItem}>
                             <Grid>
                                 <ColButton iconName="md-heart" text="点赞"/>
-                                <ColButton iconName="md-people" text="评论"/>
+                                <ColButton iconName="md-chatbubbles" text="评论"/>
                                 {this.state.collected?
                                 <ColButton iconName="md-happy" text="已收藏" onPress={()=>{}}/>:
                                 <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>
@@ -171,7 +171,7 @@ export default class AudioPage extends Component {
                         <ListItem style={styles.docContainer}>
                             <Body>
                             <Text note>{this.props.audio.doc.content}</Text>
-                            <Button block rounded style={styles.challengeButton}><Text>挑战本文段</Text></Button>  
+                            <Button block rounded style={styles.challengeButton} onPress={()=>Actions.docPage({doc:this.props.audio.doc})}><Text>挑战本文段</Text></Button>  
                             </Body>
                             
                         </ListItem>          

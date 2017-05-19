@@ -15,7 +15,11 @@ export default class ShareDoc extends Component {
     }
     componentWillMount(){
         RNFetchBlob
-            .fetch('GET','http://api.strider.site'+'/reader/doc?default=true')
+            .fetch('GET','http://api.strider.site'+'/reader/doc?default=true',{
+                'Accept-Encoding': 'gzip, deflate, sdch',
+'Accept-Language': 'zh-CN,zh;q=0.8'
+
+            })
             .then((res)=>{
                 let docList = res.json().data;
                 this.setState({
