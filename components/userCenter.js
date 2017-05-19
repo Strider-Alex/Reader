@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View,Image } from 'react-native';
+import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View,Image,AsyncStorage } from 'react-native';
 import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Card,CardItem,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
@@ -35,8 +35,25 @@ class Pink extends Component{
 // props: audio - audio object passed by react-native-router-flux Actions
 
 export default class Activity extends Component {
-    
-
+    constructor(props){
+        super(props);
+        this.state={
+            user:null
+        }
+    }
+    componentWillMount(){
+        AsyncStorage.getItem('user',(err,user)=>{
+            this.setState({
+                user:user
+            });
+        });
+    }
+    _logout(){
+        AsyncStorage.removeItem('user',(err)=>{
+            if(err) console.log(err);
+            Actions.extra();
+        });
+    }
     render() {
         return (
              /* jshint ignore: start */
@@ -48,7 +65,7 @@ export default class Activity extends Component {
                                 <Thumbnail source={require('../image/user.png')} style={styles.audioImage}/>
                             </Left>                        
                             <Body>
-                                <Text style={styles.title}>Login_user</Text>
+                                <Text style={styles.title}>{this.state.user}</Text>
                                 <Text note>颂客等级：<Pink>默默无闻</Pink></Text>
                             </Body>
                         </ListItem>
@@ -59,7 +76,7 @@ export default class Activity extends Component {
                             <Text note>This APP is so cool! I love Songke!</Text>
                         </ListItem>
                         <ListItem itemDivider><Text>其他</Text></ListItem> 
-                            <Button rounded block style={styles.logoutButton}><Text>退出登录</Text></Button>          
+                            <Button rounded block style={styles.logoutButton} onPress={()=>this._logout()}><Text>退出登录</Text></Button>          
                     </List>
                     </Content>
             </Container>

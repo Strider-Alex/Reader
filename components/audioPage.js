@@ -133,6 +133,12 @@ export default class AudioPage extends Component {
             });
         });
     }
+    //go to comment
+    _goToComment(){
+        Actions.comment({
+            item:this.props.audio
+        });
+    }
     render() {
         return (
             /* jshint ignore: start */
@@ -153,7 +159,7 @@ export default class AudioPage extends Component {
                         <ListItem style={styles.commomItem}>
                             <Grid>
                                 <ColButton iconName="md-heart" text="点赞"/>
-                                <ColButton iconName="md-chatbubbles" text="评论"/>
+                                <ColButton iconName="md-chatbubbles" onPress={()=>this._goToComment()} text="评论"/>
                                 {this.state.collected?
                                 <ColButton iconName="md-happy" text="已收藏" onPress={()=>{}}/>:
                                 <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>

@@ -13,6 +13,8 @@ import SimpleAudioPage from './simpleAudioPage';
 import Activity from './activity';
 import TabIcon from './tabIcon';
 import userCenter from './userCenter';
+import Login from './login';
+import CommentPage from './comment';
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text } from 'native-base';
 import { Scene, Router, TabBar, Modal, ActionConst } from 'react-native-router-flux';
 
@@ -23,7 +25,7 @@ export default class AppNavigator extends Component {
             <Router>
                 <Scene key="modal" component={Modal}>
                     <Scene key="root">
-                        <Scene key="main" tabs={true} initial={true} tabBarStyle={styles.tabBar}>
+                        <Scene key="main" tabs={true} tabBarStyle={styles.tabBar}>
                             <Scene key="share" component={Share} title="发现颂客" icon={TabIcon} initial={true} iconName="md-compass" hideNavBar={true}/>
                             <Scene key="myStudio" component={MyStudio} title="工作室" icon={TabIcon} iconName="md-flask" navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}/>
                             <Scene key="activity" component={Activity} title="颂客活动" icon={TabIcon} iconName="md-cafe" navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}/>
@@ -37,6 +39,10 @@ export default class AppNavigator extends Component {
                         <Scene key="musicPage" component={MusicPage} title="伴奏详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                         <Scene key="simpleList" component={SimpleList} title="工作室列表" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
                         <Scene key="simpleAudioPage" component={SimpleAudioPage} title="草稿详情" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
+                        <Scene key="comment" component={CommentPage} title="评论" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle}/>
+                        <Scene  key="extra" initial={true} >
+                            <Scene key="login" component={Login} title="登录" navigationBarStyle={styles.navBar} leftButtonIconStyle={styles.backButton} titleStyle={styles.navTitle} hideNavBar/>
+                        </Scene>
                     </Scene>
                 </Scene>
             </Router>

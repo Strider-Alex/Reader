@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard } from 'react-native';
+import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,AsyncStorage } from 'react-native';
 import {Button, Container, Content,Text, Icon, Input,InputGroup,Card,CardItem,Body, Toast } from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
@@ -106,26 +106,29 @@ export default class CreateNewAudio extends Component {
                 });
                 //if recording stop,write to database
                 if(!recording){
-                    doc = realm.objects('Doc').filtered(`title=='${this.state.doc.title}'`)['0'];
-                    realm.write(()=>{
-                         let audioResult = realm.create('Audio',{
-                            id:getID('Audio'),
-                            title:  this.state.audio,
-                            author: 'login_user',
-                            size: 100,
-                            duration:100,
-                            music:this.state.music,
-                            doc:doc,
-                            date:new Date(),
-                            collection:false
-                        },true);
-                        console.log(audioResult);
+                    AsyncStorage.getItem('user',(err,user)=>{
+                        doc = realm.objects('Doc').filtered(`title=='${this.state.doc.title}'`)['0'];
+                        realm.write(()=>{
+                            let audioResult = realm.create('Audio',{
+                                id:getID('Audio'),
+                                title:  this.state.audio,
+                                author: user,
+                                size: 100,
+                                duration:100,
+                                music:this.state.music,
+                                doc:doc,
+                                date:new Date(),
+                                collection:false
+                            },true);
+                            console.log(audioResult);
+                        });
+                        Toast.show({
+                            text:'已加入工作室！',
+                            position:'bottom',
+                            buttonText:'好'
+                        });
                     });
-                    Toast.show({
-                        text:'已加入工作室！',
-                        position:'bottom',
-                        buttonText:'好'
-                    });
+                    
                 }
             });
             //also play/stop music
