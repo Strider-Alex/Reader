@@ -1,32 +1,43 @@
 import React, { Component } from 'react';
-import {Button, Body,Container, Content, Text, Icon, Toast,List,ListItem,Left,Right,Thumbnail,Header,Item,Input } from 'native-base';
+import {Button, Body,Container, Content, Text, Icon, Toast,List,ListItem,Left,Right,Thumbnail,Header,Item,Input,Spinner } from 'native-base';
 import AudioDownloadView from './audioDownloadView';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
+
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const otherDir = dirs.DocumentDir+'/other';
-const apiUrl = 'http://api.strider.site';
+const apiUrl = 'http://120.77.250.109';
 export default class ShareAudio extends Component {
     constructor(props){
         super(props);
         this.state={
             audioList:[],
-            downloading:-1
+            downloading:-1,
+            loaded:false
         };
     }
     //did mount, get audio data from api
     componentWillMount(){
          RNFetchBlob
-            .fetch('GET',apiUrl+'/reader/audio')
+            .fetch('GET',apiUrl+'/audio')
             .then((res)=>{
-                const data = res.json().data;
+                const data = res.json();
                 this.setState({
-                    audioList:data
+                    audioList:data,
+                    loaded:true
                 });
             })
             .catch((err)=>{
                 console.log(err);
+                this.setState({
+                    loaded:true
+                });
+                Toast.show({
+                    text:'无法连接到互联网',
+                    buttonText:'好',
+                    position:'bottom'
+                });
             });
     }
 
@@ -67,6 +78,11 @@ export default class ShareAudio extends Component {
                 this.setState({
                     downloading:-1
                 });
+                Toast.show({
+                    text:'无法连接到互联网',
+                    buttonText:'好',
+                    position:'bottom'
+                });
             });
     }
     //go to audio page
@@ -78,6 +94,7 @@ export default class ShareAudio extends Component {
     render(){    
         return(
             /*jshint ignore:start*/
+            this.state.loaded?
             <Container>
                 <Content>
                     <List dataArray={this.state.audioList} renderRow={(audio)=>
@@ -96,8 +113,10 @@ export default class ShareAudio extends Component {
                         </ListItem>
                     }>
                     </List>
+                    {this.state.loaded&&this.state.audioList.length==0?<Body><Text style={{marginTop:20}} note>暂无数据</Text></Body>:null}
                 </Content>
             </Container>
+            :<Spinner/>
             /*jshint ignore:end*/
         );     
     }

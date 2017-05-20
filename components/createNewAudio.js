@@ -9,9 +9,9 @@ let player = new MusicPlayer();
 let recorder = new AudioRecorder();
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = '';
-const audioDir = dirs.DocumentDir+'/audio';
+import { AudioUtils} from 'react-native-audio';
+
+const audioDir = dirs.DocumentDir;
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -51,6 +51,7 @@ export default class CreateNewAudio extends Component {
                 doc:this.props.doc
             });
         }
+        console.log(this.props.doc);
         //listen to doc change event
         //reload doc content
         DeviceEventEmitter.addListener('docChanged',(doc)=>{
@@ -66,7 +67,7 @@ export default class CreateNewAudio extends Component {
         });
         // get permission of microphone
         this._checkPermission().then((hasPermission) => {
-                this.setState({ hasPermission });
+                this.setState({ hasPermission:hasPermission });
 
                 if (!hasPermission) return;
         });
@@ -99,7 +100,7 @@ export default class CreateNewAudio extends Component {
     }
     //on click, start or stop record
     _recordOnClick(){
-        if(this.state.audio&&this.state.music&&this.state.doc){
+        if(this.state.audio&&this.state.music){
             recorder.recordStartAndStop(`${audioDir}/${this.state.audio}.aac`,this.state.recording,(recording)=>{
                 this.setState({
                     recording:recording
@@ -109,6 +110,16 @@ export default class CreateNewAudio extends Component {
                     AsyncStorage.getItem('user',(err,user)=>{
                         doc = realm.objects('Doc').filtered(`title=='${this.state.doc.title}'`)['0'];
                         realm.write(()=>{
+                            if(!doc) doc = {
+                                id:getID('Doc'),
+                                title:this.state.doc.title,
+                                author:this.state.doc.author,
+                                book:this.state.doc.book,
+                                length:this.state.doc.length,
+                                date:new Date(this.state.doc.date),
+                                content:this.state.doc.content,
+                                remoteID:this.state.doc.remoteID
+                            }
                             let audioResult = realm.create('Audio',{
                                 id:getID('Audio'),
                                 title:  this.state.audio,

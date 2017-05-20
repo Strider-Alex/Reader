@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View } from 'react-native';
+import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View,AsyncStorage } from 'react-native';
 import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
+import {ReactNativeAudioStreaming} from 'react-native-audio-streaming';
 import MusicPlayer from './musicPlayer';
-import { Player,ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 let player = new MusicPlayer();
-
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -16,10 +15,8 @@ let realm = new Realm({
 });
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
-const audioDir = dirs.DocumentDir+'/audio';
-const apiUrl = 'http://api.strider.site/reader';
+const audioDir = dirs.DocumentDir;
+const apiUrl = 'http://120.77.250.109';
 
 //get id
 let getID=(schemaName)=>{
@@ -65,18 +62,48 @@ export default class AudioPage extends Component {
         super(props);
         this.state = {
             // if the music is playing now
-            collected:false
+            collected:false,
+            //if music is playing
+            musicPlaying:false,
+            liked:false
         };
     }
     componentWillMount() {
-        let obj = realm.objects('Audio').filtered(`remoteID=='${this.props.audio._id}'`);
+        console.log(this.props.audio);
+        let obj = realm.objects('Audio').filtered(`remoteID=='${this.props.audio.remoteID}'`);
         //set collected if it's already in database
         
         if(Object.keys(obj).length !== 0){
             this.setState({
-                collected:true
+                collected:true,
+                liked:false
             });
         }
+         //check if user has liked the audio
+        AsyncStorage.getItem('user',(err,user)=>{
+            if(err){
+                console.log(err);
+            }
+            if(user){
+                RNFetchBlob.fetch('GET', `${apiUrl}/lookup/likes/audio/${this.props.audio.remoteID}?account=${user}`)
+                .then((res)=>{
+                    const data=res.json();
+                    if(data.status){
+                        this.setState({
+                            liked:true
+                        });
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err);
+                    Toast.show({
+                        text:'无法连接到互联网',
+                        buttonText:'好',
+                        position:'bottom'
+                    });
+                });
+            }     
+        });
     }
     //add audio to collection
     _addToCollection(){
@@ -90,9 +117,9 @@ export default class AudioPage extends Component {
                     title:this.props.audio.doc.title,
                     author:this.props.audio.doc.author,
                     book:this.props.audio.doc.book,
-                    length:5,
-                    date:new Date(),
-                    likes:20,
+                    remoteID:this.props.audio.doc.remoteID,
+                    length:this.props.audio.doc.length,
+                    date:new Date(this.props.audio.doc.date),
                     content:this.props.audio.doc.content,
                 };
             }else{
@@ -105,12 +132,11 @@ export default class AudioPage extends Component {
                 size: 12,
                 duration:55,
                 music:this.props.audio.music,
+                comment:this.props.audio.comment,
                 doc:doc,
-                date:new Date(),
+                date:new Date(this.props.audio.date),
                 collection:true,
-                likes:10,
-                remoteID:this.props.audio._id,
-                path:this.props.audio.path
+                remoteID:this.props.audio.remoteID
             },true);
             console.log(audioResult);
             console.log(realm.objects('Audio').length);
@@ -127,7 +153,7 @@ export default class AudioPage extends Component {
     }
     //on click, play or stop music
     _playAudio(){
-        player.musicPlayAndStop(`${apiUrl}/audio/download?_id=${this.props.audio._id}`,(playing)=>{
+        player.musicPlayAndStop(`${apiUrl}/download/audio/${this.props.audio.remoteID}`,(playing)=>{
             this.setState({
                 musicPlaying:playing
             });
@@ -135,10 +161,39 @@ export default class AudioPage extends Component {
     }
     //go to comment
     _goToComment(){
-        Actions.comment({
-            item:this.props.audio
+        Actions.comment({itemType:'audio',remoteID:this.props.audio.remoteID});
+    }
+     _like(){
+        //like the doc
+        AsyncStorage.getItem('user',(err,user)=>{
+            if(err){
+                console.log(err);
+            }
+            if(user){
+                RNFetchBlob.fetch('POST', `${apiUrl}/like/audio`,{
+                    'Content-Type' : 'multipart/form-data',
+                }, [
+                    { name : 'account', data:user},
+                    { name : 'ID', data : String(this.props.audio.remoteID)}
+                ])
+                .then((res)=>{
+                    console.log(res.json());
+                    this.setState({
+                        liked:true
+                    });
+                })
+                .catch((err)=>{
+                    console.log(err);
+                    Toast.show({
+                        text:'无法连接到互联网',
+                        buttonText:'好',
+                        position:'bottom'
+                    });
+                });
+            }     
         });
     }
+
     render() {
         return (
             /* jshint ignore: start */
@@ -158,20 +213,27 @@ export default class AudioPage extends Component {
                         </ListItem>
                         <ListItem style={styles.commomItem}>
                             <Grid>
-                                <ColButton iconName="md-heart" text="点赞"/>
+                                {this.state.liked?
+                                <ColButton iconName="md-checkmark-circle-outline" text="已赞" onPress={()=>{}}/>:
+                                <ColButton iconName="md-heart" text="点赞" onPress={()=>this._like()}/>
+                                }
                                 <ColButton iconName="md-chatbubbles" onPress={()=>this._goToComment()} text="评论"/>
                                 {this.state.collected?
                                 <ColButton iconName="md-happy" text="已收藏" onPress={()=>{}}/>:
                                 <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>
-                                }         
+                                }
+                                {this.state.musicPlaying?
+                                <ColButton iconName="md-pause" text="停止" onPress={()=>this._playAudio()}/>:
                                 <ColButton iconName="md-arrow-dropright-circle" text="播放" onPress={()=>this._playAudio()}/>
+                                }            
+                                
                             </Grid>
                         </ListItem>
                     </List>
                     <List>
                         <ListItem itemDivider><Text>作者留言</Text></ListItem>
                         <ListItem style={styles.comment}>
-                            <Text note>This APP is so cool! I love Songke!</Text>
+                            <Text note>{this.props.audio.comment}</Text>
                         </ListItem>
                         <ListItem itemDivider><Text>文段内容</Text></ListItem> 
                         <ListItem style={styles.docContainer}>

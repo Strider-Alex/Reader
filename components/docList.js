@@ -6,7 +6,6 @@ import {Actions} from 'react-native-router-flux';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const apiUrl = 'http://api.strider.site';
-const docDir = dirs.DocumentDir+'/docs';
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 const Realm = require('realm');
 import Audio from '../models/audio';
@@ -54,7 +53,8 @@ export default class DocList extends Component {
                                 <Text>{rowData.title.split(".")[0]}</Text>
                             </Button>)}
                         enableEmptySections={true}
-                    />
+                    >
+                    </ListView>
                     :<Container><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有文本，立刻去“发现颂客”下载吧~</Text></Container>
                     }
                 </Content>

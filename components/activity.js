@@ -4,9 +4,9 @@ import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thu
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 import MusicPlayer from './musicPlayer';
-import { Player,ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 let player = new MusicPlayer();
-
+let Dimensions = require('Dimensions');
+let {width,height} = Dimensions.get('window');
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -16,9 +16,7 @@ let realm = new Realm({
 });
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
-const audioDir = dirs.DocumentDir+'/audio';
+const audioDir = dirs.DocumentDir;
 const apiUrl = 'http://api.strider.site/reader';
 
 
@@ -43,7 +41,7 @@ export default class Activity extends Component {
             <Container style={styles.container}>
                 <Content>
                     <Body>
-                    <Card style={{width:380}} >
+                    <Card>
                         <CardItem>
                             <Left>
                                 <Thumbnail source={require('../image/ic_launcher.png')}/>
@@ -54,7 +52,7 @@ export default class Activity extends Component {
                             </Left>
                           </CardItem>
                           <CardItem cardBody>
-                              <Image style={{width:380}} source={require('../image/sky.jpg')}/>
+                              <Image style={{width:width*0.9}} source={require('../image/sky.jpg')}/>
                           </CardItem>
                           <CardItem>
                                   <Text note >只为更好的颂客！</Text>

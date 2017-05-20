@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View } from 'react-native';
-import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col} from 'native-base';
+import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
-
+import MusicPlayer from './musicPlayer';
+let player = new MusicPlayer();
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
-const audioDir = dirs.DocumentDir+'/audio';
+const audioDir = dirs.DocumentDir;
 
 // component ColButton
 class ColButton extends Component{
+    
     render(){
         return(
             /* jshint ignore: start */
             <Col style={styles.col}>
-                <Button transparent style={styles.audioButton}>
+                <Button transparent  style={styles.audioButton}>
                     <Icon name={this.props.iconName} style={styles.icon}/><Text style={styles.icon}>{this.props.text}</Text>
                 </Button>
             </Col>
@@ -44,7 +44,13 @@ export default class MusicPage extends Component {
     componentDidMount() {
         console.log(this.props.music);
     }
-    
+    _playMusic(){
+        player.musicPlayAndStop(`${this.props.music}`,(playing)=>{
+            this.setState({
+                musicPlaying:playing
+            });
+        });
+    }
     render() {
         return (
             /* jshint ignore: start */
@@ -53,7 +59,7 @@ export default class MusicPage extends Component {
                     <List>
                         <ListItem style={styles.header}>
                             <Left>
-                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.musicImage}/>
+                                <Thumbnail source={require('../image/music.jpeg')} style={styles.musicImage}/>
                             </Left>                        
                             <Body>
                                 <Text style={styles.musicTitle}>{this.props.music}</Text>
@@ -61,7 +67,7 @@ export default class MusicPage extends Component {
                         </ListItem>
                             
                     </List>
-                    <Button block rounded style={styles.challengeButton}><Icon name="md-arrow-dropright-circle"/><Text>播放</Text></Button>  
+                    <Button block rounded onPress={()=>this._playMusic()} style={styles.challengeButton}><Icon name="md-arrow-dropright-circle"/><Text>播放</Text></Button>  
                     </Content>
             </Container>
             /* jshint ignore: end */

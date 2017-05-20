@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Modal from 'react-native-modalbox';
-import {Button, Body,Container, Content, Card, CardItem, Text, Textarea, Icon, Input, InputGroup,Spinner } from 'native-base';
+import {Button, Body,Container, Content, Card, CardItem, Text, Textarea, Icon, Input, InputGroup,Spinner,Toast } from 'native-base';
 import AudioListView from './audioListView';
 import MusicPlayer from './musicPlayer';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const audioDir = dirs.DocumentDir+'/audio';
+const audioDir = dirs.DocumentDir;
 const apiUrl = 'http://api.strider.site';
 let player = new MusicPlayer();
 export default class MyStudio extends Component {
@@ -105,6 +105,11 @@ export default class MyStudio extends Component {
                     uploading:false,
                 });
                 console.log(err);
+                Toast.show({
+                    text:'无法连接到互联网',
+                    buttonText:'好',
+                    position:'bottom'
+                });
             });      
     }
     render() {

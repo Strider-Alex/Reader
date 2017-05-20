@@ -36,7 +36,7 @@ class LoginPage extends Component{
                 });
             }
             else{
-                AsyncStorage.setItem('user','login_user',(err)=>{
+                AsyncStorage.setItem('user',data.account,(err)=>{
                     if(err){
                         console.log(err);
                     }else{
@@ -44,13 +44,21 @@ class LoginPage extends Component{
                     }   
                 }); 
             }
+        })
+        .catch((err)=>{
+            console.log(err);
+            Toast.show({
+                text:'无法连接到互联网',
+                buttonText:'好',
+                position:'bottom'
+            });
         });   
     }
     render(){
         return(
             /*jshint ignore:start*/
             <Container>
-                    <Image style={{height:300,width:420}}source={require('../image/tree.jpg')}/>
+                    
                     <Content  style={{marginHorizontal:10}}>
                     <Form>
                         <Item floatingLabel>
@@ -63,7 +71,7 @@ class LoginPage extends Component{
                         </Item>
                             
                     </Form>
-                    <Button style={{backgroundColor:'#00BF9A'}} rounded block onPress={()=>this._login()}><Text>现在登录</Text></Button>
+                    <Button style={styles.button} rounded block onPress={()=>this._login()}><Text>现在登录</Text></Button>
                 </Content>
             </Container>
             /*jshint ignore:end*/
@@ -105,13 +113,19 @@ class SigninPage extends Component{
                     position:'bottom'
                 });
             }
+        })
+        .catch((err)=>{
+            Toast.show({
+                text:'无法连接到互联网',
+                buttonText:'好',
+                position:'bottom'
+            });
         });
     }
     render(){
         return(
             /*jshint ignore:start*/
             <Container>
-                    <Image style={{height:250,width:420}}source={require('../image/tree.jpg')}/>
                     <Content  style={{marginHorizontal:10}}>
                     <Form>
                         <Item floatingLabel>
@@ -127,7 +141,7 @@ class SigninPage extends Component{
                             <Input  maxLength={20} onChangeText={(data)=>this.setState({nickname:data})} value={this.state.nickname}/>
                         </Item>
                     </Form>
-                    <Button style={{backgroundColor:'#00BF9A'}} rounded block onPress={()=>this._signin()}><Text>注册颂客</Text></Button>
+                    <Button style={styles.button} rounded block onPress={()=>this._signin()}><Text>注册颂客</Text></Button>
                 </Content>
             </Container>
             /*jshint ignore:end*/
@@ -180,5 +194,9 @@ export default class Login extends Component{
 const styles = {
     tabs:{
         backgroundColor:'#00AA8D'
+    },
+    button:{
+        backgroundColor:'#00BF9A',
+        margin:20
     }
 };

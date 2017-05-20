@@ -13,8 +13,8 @@ Audio.schema = {
     doc:{type:'Doc',optional:true},
     date:'date',
     collection:'bool',
-    likes:{type:'int',optional:true},
-    remoteID:{type:'string',optional:true},
+    remoteID:{type:'int',optional:true},
+    comment:{type:'string',optional:true},
     path:{type:'string',optional:true}
   }
 };
