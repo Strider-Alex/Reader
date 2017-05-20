@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View } from 'react-native';
-import {Form,Input,Item,Button, Label,Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col,Toast} from 'native-base';
+import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View,AsyncStorage } from 'react-native';
+import {Form,Input,Item,Button, Label,Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col,Toast,Spinner} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 
@@ -14,10 +14,8 @@ let realm = new Realm({
 });
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
-const audioDir = dirs.DocumentDir+'/audio';
-const apiUrl = 'http://api.strider.site/reader';
+const audioDir = dirs.DocumentDir;
+const apiUrl = 'http://120.77.250.109';
 
 //get id
 let getID=(schemaName)=>{
@@ -55,36 +53,106 @@ class Pink extends Component{
     }
 }
 
-// props: audio - audio object passed by react-native-router-flux Actions
+// props: remoteID,itemType
 
 export default class Comment extends Component {
     
     constructor(props){
         super(props);
         this.state = {
-            comment:null
+            comments:[],
+            myComment:null,
+            loaded:false
         };
     }
-   
+
+    _getData(){
+        
+        RNFetchBlob
+            .fetch('GET',`${apiUrl}/${this.props.itemType}/${this.props.remoteID}`)
+            .then((res)=>{
+                const data = res.json();
+                this.setState({
+                    comments:data,
+                    loaded:true
+                });
+            })
+            .catch((err)=>{
+                console.log(err);
+                this.setState({
+                    loaded:true
+                });
+                Toast.show({
+                    text:'无法连接到互联网',
+                    buttonText:'好',
+                    position:'bottom'
+                });
+            });
+    }
+   componentWillMount(){
+       console.log(`${apiUrl}/${this.props.itemType}/${this.props.remoteID}`);
+       this._getData();
+   }
+   _sendComment(){
+       AsyncStorage.getItem('user',(err,user)=>{
+           console.log(user);
+            if(user){
+                RNFetchBlob
+                    .fetch('POST',`${apiUrl}/comment/${this.props.itemType}`, {
+                    'Content-Type' : 'multipart/form-data',
+                }, [
+                    { name : 'ID', data : String(this.props.remoteID)},
+                    { name : 'content', data : this.state.myComment},
+                    { name : 'account', data : user}
+                ])
+                    .then((res)=>{
+                        console.log(res);
+                        Toast.show({
+                            text:'评论成功',
+                            buttonText:'好',
+                            position:'bottom'
+                        });
+                        this._getData();
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                        this.setState({
+                            loaded:true
+                        });
+                        Toast.show({
+                            text:'无法连接到互联网',
+                            buttonText:'好',
+                            position:'bottom'
+                        });
+                    });
+            }
+        });
+       
+   }
     render() {
-        data=[{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'},{user:'zhangsan',comment:'zhanhahahah'}];
+        
         return (
             /* jshint ignore: start */
             <Container style={styles.container}>
-                    <List dataArray={data} renderRow={(item)=>
+                    <List dataArray={this.state.comments} renderRow={(comment)=>
                         <ListItem>
                             <Body>
-                                <Text>{item.user}</Text>
-                                <Text note>{item.comment}</Text>
+                                <Text>{comment.commenter}</Text>
+                                <Text note>{comment.content}</Text>
                             </Body>
+                            <Right>
+                                <Text note>{new Date(comment.date).toLocaleDateString()}</Text>
+                            </Right>
                         </ListItem>
                     }>
                     </List>
+                    {this.state.loaded?null:<Spinner/>}
+                    {this.state.loaded&&this.state.comments.length==0?<Body><Text style={{marginTop:20}} note>暂无评论</Text></Body>:null}
                     <Form style={{margin:20}}>
                         <Item rounded>
-                            <Input style={{height:100,borderWidth:1,borderColor:'#FF80AB'}} multiline onChangeText={(data)=>this.setState({comment:data})} value={this.state.comment}/>
+                            <Input style={{height:100,borderColor:'#FF80AB'}} multiline onChangeText={(data)=>this.setState({myComment:data})} value={this.state.myComment}/>
                         </Item>
-                        <Button rounded block style={{marginTop:5,backgroundColor:'#FF4081'}}><Text>发表评论</Text></Button>
+                        <Button rounded block onPress={()=>this._sendComment()}style={{marginTop:5,backgroundColor:'#FF4081'}}><Text>发表评论</Text></Button>
                     </Form>
             </Container>
             /* jshint ignore: end */

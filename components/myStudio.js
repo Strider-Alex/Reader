@@ -30,7 +30,6 @@ export default class MyStudio extends Component {
                 <List dataArray={items} renderRow={(item)=>
                     <ListItem button onPress={()=>this._goToList(item)}>
                         <Left>
-                           <Thumbnail source={require('../image/ic_launcher.png')} style={styles.audioImage}/>
                            <Text style={styles.audioTitle}>{`${item}`}</Text>
                         </Left>                             
                         <Right>

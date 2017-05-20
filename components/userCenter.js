@@ -16,9 +16,7 @@ let realm = new Realm({
 });
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
-const audioDir = dirs.DocumentDir+'/audio';
+const audioDir = dirs.DocumentDir;
 const apiUrl = 'http://api.strider.site/reader';
 
 

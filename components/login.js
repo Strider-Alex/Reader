@@ -44,6 +44,14 @@ class LoginPage extends Component{
                     }   
                 }); 
             }
+        })
+        .catch((err)=>{
+            console.log(err);
+            Toast.show({
+                text:'无法连接到互联网',
+                buttonText:'好',
+                position:'bottom'
+            });
         });   
     }
     render(){
@@ -105,6 +113,13 @@ class SigninPage extends Component{
                     position:'bottom'
                 });
             }
+        })
+        .catch((err)=>{
+            Toast.show({
+                text:'无法连接到互联网',
+                buttonText:'好',
+                position:'bottom'
+            });
         });
     }
     render(){

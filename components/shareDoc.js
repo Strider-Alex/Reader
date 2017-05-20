@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import {Container, Content, Button,Text,List,ListItem,Left,Right,Body,Thumbnail,Icon} from 'native-base';
+import {Container, Content, Spinner,Button,Text,List,ListItem,Left,Right,Body,Thumbnail,Icon,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
 const apiUrl = 'http://120.77.250.109';
-const docDir = dirs.DocumentDir+'/docs';
 export default class ShareDoc extends Component {
     constructor(props){
         super(props);
         this.state={
-            docList:[]
+            docList:[],
+            loaded:false
         };
     }
     componentWillMount(){
@@ -22,81 +22,48 @@ export default class ShareDoc extends Component {
             .then((res)=>{
                 let docList = res.json();
                 this.setState({
-                    docList:docList
+                    docList:docList,
+                    loaded:true
                 });
             })
-            .catch((e)=>console.log(e));
-    }
-     // download default docs from the API
-    _downloadDoc(){
-        // set start downloading
-        this.setState({
-            downloading:true
-        });
-        RNFetchBlob
-            .fetch('GET', apiUrl+'/text')
-            .then((res)=>{
-                let data = res.json().data;
-                // new state object
-                let newState = {
-                    downloading:false
-                };
-                // write data to seperate JSON files
-                let tasks=[];
-                data.forEach((doc)=>{
-                    tasks.push(
-                        fs.writeFile(
-                            docDir+`/${doc.title}.json`,
-                            JSON.stringify(doc),
-                            'utf8'
-                        )
-                    );
+            .catch((e)=>{
+                this.setState({
+                    loaded:true
                 });
-                // finish dowload, update states
-                this.setState(newState);
-                // return all tasks
-                return Promise.all(tasks);
-            })
-            .then(()=>{
-                // show toast messages: download succeed!
                 Toast.show({
-                    text: '文本下载成功',
-                    position: 'bottom',
-                    buttonText: '好'
+                    text:'无法连接到互联网',
+                    buttonText:'好',
+                    position:'bottom'
                 });
-            })
-            .catch((err)=>{
-                console.log(err);
             });
     }
-    _goToDoc(doc){
-        Actions.docPage({
-            doc:doc
-        });
-    }
+    
     render(){
         /*jshint ignore:start*/
         return(
+            this.state.loaded?
             <Container>
                 <Content>
                     <List dataArray={this.state.docList} renderRow={(doc)=>
-                        <ListItem avatar button onPress={()=>this._goToDoc(doc)}>
+                        <ListItem avatar button onPress={()=>Actions.docPage({doc:doc})}>
                            <Left>
-                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.docImage}/>
+                                <Thumbnail square source={require('../image/doc.png')} style={styles.docImage}/>
                             </Left>                        
                             <Body>
                                 <Text style={styles.docTitle}>{doc.title}</Text>
                                 <Text note>{doc.author}</Text>
                             </Body>
                             <Right>
-                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+doc.like}</Text>
+                                <Text note><Icon style={styles.likeIcon} name="md-heart"/>{"  "+doc.likes}</Text>
                             </Right>
 
                         </ListItem>
                     }>
                     </List>
+                    {this.state.loaded&&this.state.docList.length==0?<Body><Text style={{marginTop:20}} note>暂无数据</Text></Body>:null}
                 </Content>
             </Container>
+            :<Spinner/>
         );
         /*jshint ignore:end*/
     }

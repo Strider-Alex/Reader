@@ -6,7 +6,8 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 import MusicPlayer from './musicPlayer';
 let player = new MusicPlayer();
-
+let Dimensions = require('Dimensions');
+let {width,height} = Dimensions.get('window');
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -16,9 +17,7 @@ let realm = new Realm({
 });
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
-const audioDir = dirs.DocumentDir+'/audio';
+const audioDir = dirs.DocumentDir;
 const apiUrl = 'http://120.77.250.109';
 class Pink extends Component{
     render(){
@@ -69,7 +68,7 @@ export default class SimpleAudioPage extends Component {
             { name : 'data', data : JSON.stringify(audio)}
         ])
         .then((res)=>{
-            console.log(res);
+            console.log(res.json());
             this.setState({
                 uploading:false,
                 modalVisible:false
@@ -85,6 +84,11 @@ export default class SimpleAudioPage extends Component {
                 uploading:false,
             });
             console.log(err);
+            Toast.show({
+                text:'无法连接到互联网',
+                buttonText:'好',
+                position:'bottom'
+            });
         });      
     }
     render() {
@@ -104,10 +108,11 @@ export default class SimpleAudioPage extends Component {
                             </Body>
                         </ListItem>
                     </List>
+                    <Button onPress={()=>this._playAudio()}rounded block style={styles.challengeButton}><Text>{this.state.musicPlaying?"停止":"播放"}</Text></Button>
+                            <Button onPress={()=>this.setState({modalVisible:true})}rounded block style={styles.challengeButton}><Text>发布</Text></Button>
                     <List>
                         <ListItem>
-                            <Button onPress={()=>this._playAudio()}rounded block style={styles.challengeButton}><Text>{this.state.musicPlaying?"停止":"播放"}</Text></Button>
-                            <Button onPress={()=>this.setState({modalVisible:true})}rounded block style={styles.challengeButton}><Text>发布</Text></Button>
+                            
                         </ListItem>
                         <ListItem itemDivider><Text>文段内容</Text></ListItem> 
                         <ListItem style={styles.docContainer}>
@@ -117,14 +122,14 @@ export default class SimpleAudioPage extends Component {
                         </ListItem>          
                     </List>
                     </Content>
-                    <Modal onClosed={()=>this.setState({modalVisible:false})} isOpen={this.state.modalVisible} position="center" style={{padding:20,height:400,width:300,borderRadius:10}}>
+                    <Modal onClosed={()=>this.setState({modalVisible:false})} isOpen={this.state.modalVisible} position="center" style={{padding:20,height:300,width:300,borderRadius:10}}>
                         <Container>
                             <Content>
                                     <Text>将作品和大家分享</Text>
                                     <InputGroup borderType='regular'>
-                                        <Textarea   style={{height:200,width:200}} onChangeText={(comment)=>this.setState({comment:comment})} value={this.state.comment} placeholder={"您的评论"}/>
+                                        <Textarea   style={{height:180,width:200}} onChangeText={(comment)=>this.setState({comment:comment})} value={this.state.comment} placeholder={"您的留言"}/>
                                     </InputGroup>
-                                    <Button block onPress={()=>this._shareToCloud()}>
+                                    <Button block rounded style={{backgroundColor:'#FF80AB'}} onPress={()=>this._shareToCloud()}>
                                         <Text>{this.state.uploading?'上传中...':'现在分享!'}</Text>
                                     </Button>
                             </Content>
@@ -172,8 +177,8 @@ const styles={
         color:'#FF4081'
     },
     challengeButton:{
-        marginHorizontal:50,
-        marginVertical:15,
+        marginTop:15,
+        marginHorizontal:25,
         backgroundColor:'#FF80AB'
     }
 };

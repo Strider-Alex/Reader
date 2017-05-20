@@ -9,11 +9,9 @@ let player = new MusicPlayer();
 let recorder = new AudioRecorder();
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = '';
 import { AudioUtils} from 'react-native-audio';
 
-const audioDir = dirs.DocumentDir+'/audio';
+const audioDir = dirs.DocumentDir;
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -53,6 +51,7 @@ export default class CreateNewAudio extends Component {
                 doc:this.props.doc
             });
         }
+        console.log(this.props.doc);
         //listen to doc change event
         //reload doc content
         DeviceEventEmitter.addListener('docChanged',(doc)=>{
@@ -110,6 +109,16 @@ export default class CreateNewAudio extends Component {
                 if(!recording){
                     AsyncStorage.getItem('user',(err,user)=>{
                         doc = realm.objects('Doc').filtered(`title=='${this.state.doc.title}'`)['0'];
+                        if(!doc) doc = {
+                            id:getID('Doc'),
+                            title:this.state.doc.title,
+                            author:this.state.doc.author,
+                            book:this.state.doc.book,
+                            length:this.state.doc.length,
+                            date:new Date(this.state.doc.date),
+                            content:this.state.doc.content,
+                            remoteID:this.state.doc.remoteID
+                        }
                         realm.write(()=>{
                             let audioResult = realm.create('Audio',{
                                 id:getID('Audio'),
@@ -120,7 +129,6 @@ export default class CreateNewAudio extends Component {
                                 music:this.state.music,
                                 doc:doc,
                                 date:new Date(),
-                                liked:true,
                                 collection:false
                             },true);
                             console.log(audioResult);

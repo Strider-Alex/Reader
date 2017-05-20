@@ -10,7 +10,7 @@ Doc.schema = {
     book:'string',
     length: 'int',
     date:'date',
-    liked:'bool',
+    remoteID:{type:'int',optional:true},
     content:{type:'string',optional:true}
   }
 };

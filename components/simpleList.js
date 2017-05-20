@@ -18,6 +18,21 @@ const Sound = require('react-native-sound');
 const musicDir = dirs.DocumentDir+'/music';
 const apiUrl = 'http://api.strider.site';
 
+class MyThumbnail extends Component{
+    render(){
+        /*jshint ignore:start*/
+        if(this.props.itemType=='本地文本'){
+            return (<Thumbnail square source={require('../image/doc.png')} style={styles.itemImage}/>);
+        }
+        else if(this.props.itemType=='本地伴奏'){
+            return (<Thumbnail square source={require('../image/music.jpeg')} style={styles.itemImage}/>);
+        }
+        else{
+            return (<Thumbnail square source={require('../image/ic_launcher.png')} style={styles.itemImage}/>);
+        }
+        /*jshint ignore:end*/
+    }
+}
 //props: itemType-colleciton/creation/doc/audio
 export default class simpleList extends Component {
     
@@ -28,7 +43,7 @@ export default class simpleList extends Component {
         };
     }
     componentWillMount() {
-        let itemList;
+        let itemList=[];
         if(this.props.itemType=='收藏作品'){
             itemList = realm.objects('Audio').filtered('collection==true');
         }
@@ -51,13 +66,11 @@ export default class simpleList extends Component {
 
     _goToItem(item){
         if(this.props.itemType=='收藏作品'){
-            item._id=item.remoteID;
             Actions.audioPage({
                 audio:item
             });
         }
         else if(this.props.itemType=='我的创作'){
-            item._id=item.remoteID;
             Actions.simpleAudioPage({
                 audio:item
             });
@@ -82,7 +95,7 @@ export default class simpleList extends Component {
                     <List dataArray={this.state.itemList} renderRow={(item)=>
                         <ListItem avatar button onPress={()=>this._goToItem(item)}>
                            <Left>
-                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.itemImage}/>
+                                <MyThumbnail itemType={this.props.itemType}/>
                             </Left>                        
                             <Body>
                                 <Text style={styles.itemTitle}>{item.title?item.title:item}</Text>
@@ -92,6 +105,7 @@ export default class simpleList extends Component {
                         </ListItem>
                     }>
                     </List>
+                    {this.state.itemList.length===0?<Body><Text style={{marginTop:20}} note>暂无数据</Text></Body>:null}
                 </Content>
             </Container>
             /*jshint ignore:end*/

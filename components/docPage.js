@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View } from 'react-native';
+import {DeviceEventEmitter,Platform,PermissionsAndroid, ScrollView,Keyboard,View,AsyncStorage } from 'react-native';
 import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thumbnail,Grid,Col,Toast} from 'native-base';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
-
+const apiUrl = 'http://120.77.250.109';
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -14,9 +14,7 @@ let realm = new Realm({
 
 const fs = RNFetchBlob.fs;
 const dirs = fs.dirs;
-const docDir = dirs.DocumentDir+'/docs';
-const musicDir = dirs.DocumentDir+'/music';
-const audioDir = dirs.DocumentDir+'/audio';
+const audioDir = dirs.DocumentDir;
 
 //get id
 let getID=(schemaName)=>{
@@ -61,19 +59,45 @@ export default class DocPage extends Component {
     constructor(props){
         super(props);
         this.state={
-            collected:false
+            collected:false,
+            liked:false
         };
     }
     componentWillMount() {
-        console.log(this.props.doc.title)
+        console.log(this.props.doc.remoteID);
         let obj = realm.objects('Doc').filtered(`title=='${this.props.doc.title}'`);
+        console.log(obj);
         //set collected if it's already in database
         if(Object.keys(obj).length !== 0){
             this.setState({
                 collected:true
             });
         }
-        console.log(obj);
+        //check if user has liked the doc
+        AsyncStorage.getItem('user',(err,user)=>{
+            if(err){
+                console.log(err);
+            }
+            if(user){
+                RNFetchBlob.fetch('GET', `${apiUrl}/lookup/likes/text/${this.props.doc.remoteID}?account=${user}`)
+                .then((res)=>{
+                    const data=res.json();
+                    if(data.status){
+                        this.setState({
+                            liked:true
+                        });
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err);
+                    Toast.show({
+                        text:'无法连接到互联网',
+                        buttonText:'好',
+                        position:'bottom'
+                    });
+                });
+            }     
+        });
     }
 
     //add doc to collection
@@ -87,10 +111,10 @@ export default class DocPage extends Component {
                     title:this.props.doc.title,
                     author:this.props.doc.author,
                     book:this.props.doc.book,
-                    length:this.props.length,
-                    date:this.props.date,
-                    liked:false,
+                    length:this.props.doc.length,
+                    date:new Date(this.props.doc.date),
                     content:this.props.doc.content,
+                    remoteID:this.props.doc.remoteID
                 },true);
             }
         });
@@ -111,6 +135,36 @@ export default class DocPage extends Component {
         });
         
     }
+    _like(){
+        //like the doc
+        AsyncStorage.getItem('user',(err,user)=>{
+            if(err){
+                console.log(err);
+            }
+            if(user){
+                RNFetchBlob.fetch('POST', `${apiUrl}/like/text`,{
+                    'Content-Type' : 'multipart/form-data',
+                }, [
+                    { name : 'account', data:user},
+                    { name : 'ID', data : String(this.props.doc.remoteID)}
+                ])
+                .then((res)=>{
+                    console.log(res.json());
+                    this.setState({
+                        liked:true
+                    });
+                })
+                .catch((err)=>{
+                    console.log(err);
+                    Toast.show({
+                        text:'无法连接到互联网',
+                        buttonText:'好',
+                        position:'bottom'
+                    });
+                });
+            }     
+        });
+    }
     render() {
         return (
             /* jshint ignore: start */
@@ -119,7 +173,7 @@ export default class DocPage extends Component {
                     <List>
                         <ListItem style={styles.header}>
                             <Left>
-                                <Thumbnail source={require('../image/ic_launcher.png')} style={styles.docImage}/>
+                                <Thumbnail square source={require('../image/doc.png')} style={styles.docImage}/>
                             </Left>                        
                             <Body>
                                 <Text style={styles.docTitle}>{this.props.doc.title}</Text>
@@ -129,8 +183,11 @@ export default class DocPage extends Component {
                         </ListItem>
                         <ListItem style={styles.commomItem}>
                             <Grid>
-                                <ColButton iconName="md-heart" text="点赞"/>
-                                <ColButton iconName="md-chatbubbles" text="评论"/>
+                                {this.state.liked?
+                                <ColButton iconName="md-checkmark-circle-outline" text="已点赞" onPress={()=>{}}/>:
+                                <ColButton iconName="md-heart" text="点赞" onPress={()=>this._like()}/>
+                                }
+                                <ColButton iconName="md-chatbubbles" text="评论" onPress={()=>Actions.comment({itemType:'text',remoteID:this.props.doc.remoteID})}/>
                                 {this.state.collected?
                                 <ColButton iconName="md-happy" text="已收藏" onPress={()=>{}}/>:
                                 <ColButton iconName="md-albums" text="收藏" onPress={()=>this._addToCollection()}/>
