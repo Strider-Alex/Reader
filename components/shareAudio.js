@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Button, Body,Container, Content, Text, Icon, Toast,List,ListItem,Left,Right,Thumbnail,Header,Item,Input,Spinner } from 'native-base';
-import AudioDownloadView from './audioDownloadView';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 
