@@ -46,7 +46,7 @@ export default class DocList extends Component {
             <Container style={{marginTop:100}}>
                 <Content>
                     {(this.state.docList.length)?
-                    <List
+                    <ListView
                         dataSource={ds.cloneWithRows(this.state.docList)}
                         renderRow={(rowData) => (
                             <Button block transparent={true} onPress={()=>this._onDocSelected(rowData)}>
@@ -54,7 +54,7 @@ export default class DocList extends Component {
                             </Button>)}
                         enableEmptySections={true}
                     >
-                    </List>
+                    </ListView>
                     :<Container><Text note style={{fontSize:14,padding:20}}>啊噢，您似乎还没有文本，立刻去“发现颂客”下载吧~</Text></Container>
                     }
                 </Content>

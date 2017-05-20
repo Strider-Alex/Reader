@@ -109,17 +109,17 @@ export default class CreateNewAudio extends Component {
                 if(!recording){
                     AsyncStorage.getItem('user',(err,user)=>{
                         doc = realm.objects('Doc').filtered(`title=='${this.state.doc.title}'`)['0'];
-                        if(!doc) doc = {
-                            id:getID('Doc'),
-                            title:this.state.doc.title,
-                            author:this.state.doc.author,
-                            book:this.state.doc.book,
-                            length:this.state.doc.length,
-                            date:new Date(this.state.doc.date),
-                            content:this.state.doc.content,
-                            remoteID:this.state.doc.remoteID
-                        }
                         realm.write(()=>{
+                            if(!doc) doc = {
+                                id:getID('Doc'),
+                                title:this.state.doc.title,
+                                author:this.state.doc.author,
+                                book:this.state.doc.book,
+                                length:this.state.doc.length,
+                                date:new Date(this.state.doc.date),
+                                content:this.state.doc.content,
+                                remoteID:this.state.doc.remoteID
+                            }
                             let audioResult = realm.create('Audio',{
                                 id:getID('Audio'),
                                 title:  this.state.audio,
