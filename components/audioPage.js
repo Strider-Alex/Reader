@@ -4,7 +4,8 @@ import {Button, Container, Content,Text, Icon, Body,Left,Right,List,ListItem,Thu
 import RNFetchBlob from 'react-native-fetch-blob';
 import {Actions} from 'react-native-router-flux';
 import {ReactNativeAudioStreaming} from 'react-native-audio-streaming';
-
+import MusicPlayer from './musicPlayer';
+let player = new MusicPlayer();
 const Realm = require('realm');
 import Audio from '../models/audio';
 import Doc from '../models/doc';
@@ -152,15 +153,10 @@ export default class AudioPage extends Component {
     }
     //on click, play or stop music
     _playAudio(){
-        if(this.state.musicPlaying){
-            ReactNativeAudioStreaming.stop();
-        }
-        else{
-            console.log(`${apiUrl}/download/audio/${this.props.audio.remoteID}`);
-            ReactNativeAudioStreaming.play(`${apiUrl}/download/audio/${this.props.audio.remoteID}`,{showIniOSMediaCenter: true, showInAndroidNotifications: true});
-        }
-        this.setState({
-            musicPlaying:!this.state.musicPlaying
+        player.musicPlayAndStop(`${apiUrl}/download/audio/${this.props.audio.remoteID}`,(playing)=>{
+            this.setState({
+                musicPlaying:playing
+            });
         });
     }
     //go to comment
