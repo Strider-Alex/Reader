@@ -3,7 +3,7 @@ My first ReactNative app, ranking top 50 in 2017 Huawei Hi-dream Cup.
 
 (the client-side source code only)
 ### Idea
-Designed for brand new reading-aloud experience. People can share their writings, read other's work aloud and record it to compete wiht each other.
+Designed for brand new reading-aloud experience. People can share their writings, read other's work aloud and record it to compete with each other.
 ### Features
 - Upload your own writings, preferrably short essays.
 - Read your favourite writings aloud and record it using this App.
